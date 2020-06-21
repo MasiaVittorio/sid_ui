@@ -1,0 +1,5 @@
+/.dart_tool
+/.idea
+/.packages
+/pubspec.lock
+/sid_ui.iml
