@@ -21,8 +21,9 @@ class FullSlider extends StatefulWidget {
   final double min;
   final double max;
 
-  final int divisions; /// number of divisions, after each gesture the value is adjusted to the nearest division
-  final double tapToEditBy; /// tap right to += by this value, tap left to -= by this value. if null, taps are ignored
+  /// number of divisions, after each gesture the value is adjusted to the nearest division
+  /// tap right to += by a division, tap left to -= by a division. if null, taps are ignored
+  final int divisions; 
 
   final double crossAxisSize;
 
@@ -44,7 +45,6 @@ class FullSlider extends StatefulWidget {
     this.max = 1.0,
 
     this.divisions,
-    this.tapToEditBy,
 
     this.enabled = true,
 
@@ -234,9 +234,9 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
             onVerticalDragUpdate: disabled || horizontal ? null : (details) => dragUpdate(details, delta - widget.crossAxisSize),
             onHorizontalDragEnd: disabled || vertical ? null : (_) => dragEnd(),
             onVerticalDragEnd: disabled || horizontal ? null : (_) => dragEnd(),
-            onHorizontalDragCancel: disabled || vertical || widget.tapToEditBy != null ? null : dragEnd,
-            onVerticalDragCancel: disabled || horizontal || widget.tapToEditBy != null ? null : dragEnd,
-            onTapUp: widget.tapToEditBy == null ? null : (d) => tap(d, constraints),
+            onHorizontalDragCancel: disabled || vertical || widget.divisions != null ? null : dragEnd,
+            onVerticalDragCancel: disabled || horizontal || widget.divisions != null ? null : dragEnd,
+            onTapUp: disabled || widget.divisions == null ? null : (d) => tap(d, constraints),
             child: Stack(children: <Widget>[
               Positioned.fill(child: Container(
                 decoration: BoxDecoration(
@@ -329,7 +329,7 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
   }
 
   void tap(TapUpDetails details, BoxConstraints constraints) async {
-    final double by = widget.tapToEditBy/(widget.max - widget.min); //between 0 and 1
+    final double by = 1/widget.divisions;
     final double prev = _prevTapTarget ?? controller.value;
 
     
@@ -342,7 +342,6 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
       _prevTapTarget,
       duration: const Duration(milliseconds: 250), 
     );
-
     dragEnd();
   }
 

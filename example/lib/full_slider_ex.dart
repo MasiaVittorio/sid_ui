@@ -27,7 +27,6 @@ class _StateFulPartState extends State<StateFulPart> {
             ListTile(title: Text("value 1: $s1"),),
             ListTile(title: Text("value 2: $s2"),),
             FullSlider(
-              tapToEditBy: 1,
               scrollDirection: Axis.horizontal,
               value: value,
               onChanged: (newValue) => setState((){
@@ -43,7 +42,6 @@ class _StateFulPartState extends State<StateFulPart> {
             FullSlider(
               defaultValue: 20,
               value: value2,
-              tapToEditBy: 10,
               divisions: 20,
               titleBuilder: (v) => Text("val: ${v.toStringAsFixed(2)}"),
               leading: Icon(Icons.ac_unit),
