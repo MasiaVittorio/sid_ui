@@ -21,6 +21,9 @@ class FullSlider extends StatefulWidget {
   final double min;
   final double max;
 
+  final int divisions; /// number of divisions, after each gesture the value is adjusted to the nearest division
+  final double tapToEditBy; /// tap right to += by this value, tap left to -= by this value. if null, taps are ignored
+
   final double crossAxisSize;
 
   final Axis scrollDirection;
@@ -39,6 +42,9 @@ class FullSlider extends StatefulWidget {
     this.defaultValue,
     this.min = 0.0,
     this.max = 1.0,
+
+    this.divisions,
+    this.tapToEditBy,
 
     this.enabled = true,
 
@@ -71,6 +77,7 @@ class FullSlider extends StatefulWidget {
 class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateMixin {
 
   AnimationController controller;
+  double _prevTapTarget;
 
   @override
   void initState() {
@@ -82,6 +89,7 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
     controller?.dispose();
     controller = AnimationController(
       vsync: this,
+      duration: const Duration(milliseconds: 250), 
       value: widgetToAnimation(widget.value),
     );
   }
@@ -128,6 +136,9 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
   bool get withTrailing => widget.trailing != null || widget.trailingBuilder != null;
 
   bool get disabled => !(widget.enabled ?? true);
+
+  double get dividedControllerValue => (controller.value*widget.divisions).round()/widget.divisions;
+
   @override
   Widget build(BuildContext context) {
     
@@ -219,42 +230,41 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
             maxHeight: vertical ? constraints.maxHeight : widget.crossAxisSize,
           ),
           child: GestureDetector(
-            onHorizontalDragUpdate: disabled ? null : horizontal ? (details) => dragUpdate(details, delta - widget.crossAxisSize) : null,
-            onVerticalDragUpdate: disabled ? null : vertical ? (details) => dragUpdate(details, delta - widget.crossAxisSize) : null,
-            onHorizontalDragEnd: disabled ? null : horizontal ? (_) => dragEnd() : null,
-            onVerticalDragEnd: disabled ? null : vertical ? (_) => dragEnd() : null,
-            onHorizontalDragCancel: disabled ? null : horizontal ? () => dragEnd() : null,
-            onVerticalDragCancel: disabled ? null : vertical ? () => dragEnd() : null,
-            
-            child: AnimatedBuilder(
-              animation: controller, 
-              builder: (_,__) {
-                final double val = controller.value;
-
-                return Stack(children: <Widget>[
-                  Positioned.fill(child: Container(
-                    decoration: BoxDecoration(
-                      color: background, 
-                      // color: themeData.colorScheme.onSurface.withOpacity(0.034), 
-                      borderRadius: BorderRadius.circular(widget.radius),
-                    ),
-                    child: bottomContent,
-                  )),
-                  Positioned.fill(child: Align(
-                    alignment: aligment,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(widget.radius),
-                      child: Align(
+            onHorizontalDragUpdate: disabled || vertical ? null : (details) => dragUpdate(details, delta - widget.crossAxisSize),
+            onVerticalDragUpdate: disabled || horizontal ? null : (details) => dragUpdate(details, delta - widget.crossAxisSize),
+            onHorizontalDragEnd: disabled || vertical ? null : (_) => dragEnd(),
+            onVerticalDragEnd: disabled || horizontal ? null : (_) => dragEnd(),
+            onHorizontalDragCancel: disabled || vertical || widget.tapToEditBy != null ? null : dragEnd,
+            onVerticalDragCancel: disabled || horizontal || widget.tapToEditBy != null ? null : dragEnd,
+            onTapUp: widget.tapToEditBy == null ? null : (d) => tap(d, constraints),
+            child: Stack(children: <Widget>[
+              Positioned.fill(child: Container(
+                decoration: BoxDecoration(
+                  color: background, 
+                  // color: themeData.colorScheme.onSurface.withOpacity(0.034), 
+                  borderRadius: BorderRadius.circular(widget.radius),
+                ),
+                child: bottomContent,
+              )),
+              Positioned.fill(child: Align(
+                alignment: aligment,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(widget.radius),
+                  child: AnimatedBuilder(
+                    animation: controller, 
+                    builder: (_,__) {
+                      final double val = controller.value;
+                      return Align(
                         alignment: aligment,
                         widthFactor: horizontal ? val.mapToRange(widget.crossAxisSize / delta, 1.0) : null,
                         heightFactor: vertical ? val.mapToRange(widget.crossAxisSize / delta, 1.0) : null,
                         child: topContent,
-                      )
-                    ),
-                  ),),
-                ],);
-              },
-            ),
+                      );
+                    },
+                  ),
+                ),
+              ),),
+            ],),
           ),
         );
       },),
@@ -271,6 +281,7 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
       child: IconButton(
         icon: Icon(Icons.restore),
         onPressed: (){
+          _prevTapTarget = null;
           controller.animateTo(
             widgetToAnimation(widget.defaultValue), 
             duration: const Duration(milliseconds: 250), 
@@ -297,14 +308,42 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
   }
 
   void dragUpdate(DragUpdateDetails details, double max){
+    _prevTapTarget = null;
     controller.value += details.primaryDelta / max;
     widget.onChanged?.call(animationToWidget(controller.value));
   }
 
-  void dragEnd(){
+  void dragEnd() async {
+    if(!mounted) return;
+
+    if(widget.divisions != null) {
+      await this.controller.animateTo(
+        dividedControllerValue,
+        duration: const Duration(milliseconds: 250),
+      );
+    }
+    _prevTapTarget = null;
     final double widgetVal = animationToWidget(controller.value);
     widget.onChanged?.call(widgetVal);
     widget.onChangeEnd?.call(widgetVal);
+  }
+
+  void tap(TapUpDetails details, BoxConstraints constraints) async {
+    final double by = widget.tapToEditBy/(widget.max - widget.min); //between 0 and 1
+    final double prev = _prevTapTarget ?? controller.value;
+
+    
+    if(details.localPosition.dx > (horizontal ? constraints.maxWidth : constraints.maxHeight)/2){
+      _prevTapTarget = (prev + by).clamp(0.0, 1.0);
+    } else {
+      _prevTapTarget = (prev - by).clamp(0.0, 1.0);
+    }
+    await controller.animateTo(
+      _prevTapTarget,
+      duration: const Duration(milliseconds: 250), 
+    );
+
+    dragEnd();
   }
 
 }
