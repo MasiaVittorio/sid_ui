@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sid_utils/sid_utils.dart';
 
 class AnimatedListed extends ImplicitlyAnimatedWidget {
   AnimatedListed({
@@ -13,8 +14,8 @@ class AnimatedListed extends ImplicitlyAnimatedWidget {
         axis = axis ?? Axis.vertical,
         axisAlignment = axisAlignment ?? -1,
         super(
-          curve: curve ?? Curves.linear, 
-          duration: duration ?? const Duration(milliseconds: 200)
+          curve: curve ?? Curves.ease, 
+          duration: duration ?? const Duration(milliseconds: 250)
         );
 
   final double axisAlignment;
@@ -44,15 +45,13 @@ class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedListed> {
     final double overlap = widget.overlapSizeAndOpacity.clamp(0.0, 1.0);
     final double val = _tween.evaluate(animation);
 
-    final double minSizeVal = 0.0;
     final double maxSizeVal = 1/2 + overlap/2;
-    final double deltaSizeVal = maxSizeVal - minSizeVal;
-    final double sizeFactor = ((val - minSizeVal) / deltaSizeVal).clamp(0.0, 1.0);
+
+    final double sizeFactor = val.mapToRange(0, 1, fromMin: 0.0, fromMax: maxSizeVal);
 
     final double minOpacityVal = 1/2 - overlap/2;
-    final double maxOpacityVal = 1.0;
-    final double deltaOpacityVal = maxOpacityVal - minOpacityVal;
-    final double opacity = ((val - minOpacityVal) / deltaOpacityVal).clamp(0.0, 1.0);
+
+    final double opacity = val.mapToRange(0.0, 1.0, fromMin: minOpacityVal, fromMax: 1.0);
 
 
     return ClipRect(
