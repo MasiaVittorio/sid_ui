@@ -6,9 +6,12 @@ class Section extends StatelessWidget {
   final List<Widget> children;
   final bool last;
   final bool stretch;
+  final DecorationImage image;
+
   const Section(this.children, {
     this.last = false,
     this.stretch = false,
+    this.image,
   });
 
   @override
@@ -17,12 +20,15 @@ class Section extends StatelessWidget {
       padding: EdgeInsets.only(bottom: last ? 0.0 : 14.0),
       child: Container(
         decoration: BoxDecoration(
+          image: image,
+          color: Theme.of(context).canvasColor,
           boxShadow: [BoxShadow(
             blurRadius: 0.15,
             color: Color(0x65000000)
           )],
         ), 
         child: Material(
+          type: MaterialType.transparency,
           child: Column(
             mainAxisSize: MainAxisSize.min, 
             crossAxisAlignment: stretch ? CrossAxisAlignment.stretch: CrossAxisAlignment.start,
