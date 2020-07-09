@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class AnimatedDouble extends ImplicitlyAnimatedWidget {
   AnimatedDouble({
     @required this.value,
-    this.builder,
+    @required this.builder,
     Curve curve,
     @required Duration duration,
   })  : assert(value != null),
