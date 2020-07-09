@@ -4,6 +4,7 @@ class SubSection extends StatelessWidget {
   final List<Widget> children;
   final CrossAxisAlignment crossAxisAlignment;
   final MainAxisAlignment mainAxisAlignment;
+  final MainAxisSize mainAxisSize;
   final EdgeInsets margin;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
@@ -15,6 +16,7 @@ class SubSection extends StatelessWidget {
     this.onTap,
     this.onLongPress,
     this.mainAxisAlignment = MainAxisAlignment.start,
+    this.mainAxisSize = MainAxisSize.min,
     this.borderRadius = borderRadiusDefault,
     this.color = true,
   }): assert(crossAxisAlignment != null),
@@ -28,6 +30,7 @@ class SubSection extends StatelessWidget {
     this.borderRadius = borderRadiusDefault,
     this.color = true,
     this.mainAxisAlignment = MainAxisAlignment.start,
+    this.mainAxisSize = MainAxisSize.min,
   }): assert(crossAxisAlignment != null),
       assert(margin != null);
 
@@ -38,6 +41,7 @@ class SubSection extends StatelessWidget {
     this.borderRadius = borderRadiusDefault,
     this.color = true,
     this.mainAxisAlignment = MainAxisAlignment.start,
+    this.mainAxisSize = MainAxisSize.min,
   }): assert(margin != null),
       crossAxisAlignment = CrossAxisAlignment.stretch;
 
@@ -67,7 +71,7 @@ class SubSection extends StatelessWidget {
           child: Column(
             mainAxisAlignment: this.mainAxisAlignment,
             crossAxisAlignment: this.crossAxisAlignment,
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: this.mainAxisSize ?? MainAxisSize.min,
             children: this.children,
           ),
         ),
