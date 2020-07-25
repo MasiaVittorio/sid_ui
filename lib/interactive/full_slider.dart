@@ -103,11 +103,10 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
   @override
   void didUpdateWidget(FullSlider oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(oldWidget.value != widget.value){
-      controller.value =  widgetToAnimation(widget.value);
-    }
-    if(oldWidget.min != widget.min || oldWidget.max != widget.max){
-      initController();
+    final oldAnimationVal = widgetToAnimation(oldWidget.value);
+    final newAnimationVal = widgetToAnimation(widget.value);
+    if(oldAnimationVal != newAnimationVal){
+      controller.value = newAnimationVal;
     }
   }
 
