@@ -20,12 +20,17 @@ class RadioNavBar<T> extends StatelessWidget {
     this.forceSingleColor = false,
     this.forceBrightness,
     this.accentTextColor,
+    bool googleLike = false,
     Key key,
-  }): shifting = RadioNavBarItem.allColoredItems(items.values),
+  }): shifting = RadioNavBarItem.allColoredItems(items.values) ?? false,
       tileSize = tileSize ?? defaultTileSize,
+      googleLike = googleLike ?? false,
       super(key: key){
         assert(shifting != null);
       }
+
+  // TODO: colored but not shifting? accent the selected text with color
+  
 
   //=============================================
   // Values
@@ -42,6 +47,8 @@ class RadioNavBar<T> extends StatelessWidget {
   final Duration duration;
   final bool forceSingleColor;
   final Brightness forceBrightness;
+  /// "white" (canvas) background, different accent color per page
+  final bool googleLike;
 
 
   static double bottomPaddingFromMQ(MediaQueryData mediaQuery)
@@ -57,27 +64,43 @@ class RadioNavBar<T> extends StatelessWidget {
     Alignment alignment;
     Color color;
 
-    if(!shifting || forceSingleColor == true){
-      color = singleBackgroundColor ?? theme.canvasColor;
+    bool single;
+    if(!shifting || forceSingleColor == true || googleLike){
+      single = true;
+      color = googleLike
+        ? theme.canvasColor
+        : singleBackgroundColor ?? theme.canvasColor;
       alignment = Alignment.center;
     } else {
+      single = false;
       final barCenterVerticalOffset = topPadding + tileSize/2;
-      final barCenterVerticalAlignment = (barCenterVerticalOffset / totalHeight)*2 - 1;
+      final barCenterVerticalAlignment 
+        = (barCenterVerticalOffset / totalHeight) * 2 - 1;
       final selectedIndex = orderedValues.indexOf(selectedValue);
-      final splashHorizontalAlignment = ((selectedIndex + 1)/(orderedValues.length + 1))*2 -1;
-      alignment =Alignment(splashHorizontalAlignment, barCenterVerticalAlignment);
+      final splashHorizontalAlignment = 
+        ((selectedIndex + 1) / (orderedValues.length + 1)) * 2 -1;
+      alignment = Alignment(
+        splashHorizontalAlignment, 
+        barCenterVerticalAlignment,
+      );
       color = items[selectedValue].color;
     }
 
-    final Brightness colorBrightness = forceBrightness ?? ThemeData.estimateBrightnessForColor(color);
+    final Brightness _forcedBrightness = googleLike 
+        ? null : this.forceBrightness;
+    final Brightness colorBrightness = _forcedBrightness
+        ?? ThemeData.estimateBrightnessForColor(color);
 
     final Color unselectedIconColor = colorBrightness == Brightness.light
       ? Colors.black.withOpacity(0.8) 
       : Colors.white.withOpacity(0.8);
 
-    final Color _accentTextColor = !shifting && this.accentTextColor != null 
+    final Color _accentTextColor = (single && !googleLike && this.accentTextColor != null) 
       ? this.accentTextColor
-      : unselectedIconColor.withOpacity(1.0);
+      : (googleLike 
+        ? items[selectedValue].color
+        : null
+      ) ?? unselectedIconColor.withOpacity(1.0);
 
     final Widget bar = IconTheme.merge(
       data: IconThemeData(color: unselectedIconColor, opacity: 1.0, size: 24.0),
