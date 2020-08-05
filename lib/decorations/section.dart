@@ -46,14 +46,18 @@ class Section extends StatelessWidget {
 class SectionTitle extends StatelessWidget {
   final String title;
   final bool animated;
-  const SectionTitle(this.title, {this.animated = false});
+  final Color overrideColor;
+  const SectionTitle(this.title, {
+    this.animated = false,
+    this.overrideColor,
+  });
 
 
   @override
   Widget build(BuildContext context) {
     final textStyle = DefaultTextStyle.of(context).style;
     final style = textStyle.copyWith(
-      color: RightContrast(
+      color: overrideColor ?? RightContrast(
         Theme.of(context), 
         fallbackOnTextTheme: true
       ).onCanvas,
