@@ -7,11 +7,13 @@ class Section extends StatelessWidget {
   final bool last;
   final bool stretch;
   final DecorationImage image;
+  final Color backgroundColor;
 
   const Section(this.children, {
     this.last = false,
     this.stretch = false,
     this.image,
+    this.backgroundColor,
   });
 
   @override
@@ -21,7 +23,7 @@ class Section extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           image: image,
-          color: Theme.of(context).canvasColor,
+          color: backgroundColor ?? Theme.of(context).canvasColor,
           boxShadow: [BoxShadow(
             blurRadius: 0.15,
             color: Color(0x65000000)

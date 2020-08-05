@@ -10,6 +10,7 @@ class SubSection extends StatelessWidget {
   final VoidCallback onLongPress;
   final BorderRadius borderRadius;
   final bool color;
+  final Color overrideColor;
 
   const SubSection.withoutMargin(this.children, {
     this.crossAxisAlignment = CrossAxisAlignment.start, 
@@ -19,6 +20,7 @@ class SubSection extends StatelessWidget {
     this.mainAxisSize = MainAxisSize.min,
     this.borderRadius = borderRadiusDefault,
     this.color = true,
+    this.overrideColor,
   }): assert(crossAxisAlignment != null),
       margin = EdgeInsets.zero;
 
@@ -31,6 +33,7 @@ class SubSection extends StatelessWidget {
     this.color = true,
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,
+    this.overrideColor,
   }): assert(crossAxisAlignment != null),
       assert(margin != null);
 
@@ -42,6 +45,7 @@ class SubSection extends StatelessWidget {
     this.color = true,
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,
+    this.overrideColor,
   }): assert(margin != null),
       crossAxisAlignment = CrossAxisAlignment.stretch;
 
@@ -57,7 +61,7 @@ class SubSection extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: color ? background : null,
+        color: overrideColor ?? (color ? background : null),
         borderRadius: borderRadius,
       ),
       child: Material(
