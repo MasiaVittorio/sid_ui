@@ -1,7 +1,7 @@
 library radio_slider;
 
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
+// import 'dart:math' as math;
 import '../../animated/showers/animated_listed.dart';
 
 part 'widget.dart';

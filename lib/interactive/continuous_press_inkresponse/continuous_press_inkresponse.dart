@@ -51,7 +51,7 @@ class _ContinuousPressInkResponseState extends State<ContinuousPressInkResponse>
 
   @override
   Widget build(BuildContext context) {
-
+    InkResponse();
     ///the 
     return InkResponseWithLongPressUp(
       child: widget.child,
@@ -64,3 +64,6 @@ class _ContinuousPressInkResponseState extends State<ContinuousPressInkResponse>
   }
 
 }
+
+
+
