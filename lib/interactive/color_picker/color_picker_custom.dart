@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sid_ui/decorations/up_shadower.dart';
 import 'package:sid_ui/interactive/advanced_slider/advanced_slider.dart';
-import 'color_to_hex.dart';
+import 'models/color_to_hex.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:sid_utils/sid_utils.dart';
 
@@ -81,7 +81,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
   }
 
   void copyToClipboard(){
-    Clipboard.setData(ClipboardData(text: colorToHex(this._color)));
+    Clipboard.setData(ClipboardData(text: _color.hexString));
   }
 
   void _updateHsvFromColor(){
@@ -315,7 +315,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
         }),
         child: Center(
           child: Text(
-            "#FF ${colorToHex(this._color)}",
+            "#FF ${_color.hexString}",
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700, 

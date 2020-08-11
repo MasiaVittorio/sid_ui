@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'manual_color_picker.dart';
+import 'color_picker_manual.dart';
 
 import 'package:tinycolor/tinycolor.dart';
 
-import 'this_double_color.dart';
-import 'custom_color_picker.dart';
-import 'palette_color_picker.dart';
+import 'models/palette.dart';
+import 'color_picker_custom.dart';
+import 'color_picker_palette.dart';
 import 'components/simple_nav_bar.dart';
 
 enum ColorPickerMode{
@@ -67,7 +67,7 @@ class _MaterialColorPickerState extends State<MaterialColorPicker> with TickerPr
     else
       this._color = widget.color;
     
-    if(allMaterialPalette.contains(this._color))
+    if(PaletteTab.allColors.contains(this._color))
       this._mode = ColorPickerMode.palette;
     else 
       this._mode = ColorPickerMode.manual;
@@ -76,8 +76,8 @@ class _MaterialColorPickerState extends State<MaterialColorPicker> with TickerPr
   void toggleMode(ColorPickerMode newMode) => setState(() {
     this._mode = newMode;
     if(this._mode == ColorPickerMode.palette){
-      if(allMaterialPalette.contains(this._color) == false){
-        this._color = findClosest(this._color);
+      if(PaletteTab.allColors.contains(this._color) == false){
+        this._color = PaletteTab.findClosestMaterialColor(_color);
       }
     }      
   });

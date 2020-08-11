@@ -2,9 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:sid_utils/sid_utils.dart';
-import 'color_to_hex.dart';
+import 'models/color_to_hex.dart';
 
-import 'this_double_color.dart';
+import 'models/palette.dart';
 
 import 'dart:math' as math;
 
@@ -25,39 +25,34 @@ class PaletteColorPicker extends StatefulWidget {
 
 class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProviderStateMixin {
 
-  final List<ThisDoubleColor> _thisColors = materialPalette;
+  final List<PaletteTab> _tabs = PaletteTab.allTabs;
 
   TabController _tabController;
 
-  int _secondIndex = 0;
-
-  List<List<Color>> get allShades => <List<Color>>[
-    for(final dbc in _thisColors)
-      dbc.shades,
-  ];
+  int _colorIndex;
 
   List<int> find(Color c){
-    for(int i=0; i < this._thisColors.length; ++i){
-      final _dblc = this._thisColors[i];
-      if(_dblc.shades.contains(c)){
-        return [i,_dblc.shades.indexOf(c)];
+    for(int tabI=0; tabI < this._tabs.length; ++tabI){
+      final tab = this._tabs[tabI];
+      for(int colI=0; colI<tab.shades.length; ++colI){
+        if(tab.shades[colI] == c) 
+          return [tabI,colI];
       }
     }
-    return <int>[];
+    return <int>[null, null];
   }
 
   @override
   void initState() {
     super.initState();
     this._tabController = TabController(
-      length: this._thisColors.length,
+      length: this._tabs.length,
       vsync: this,
     );
     List<int> _indexes = this.find(widget.color);
-    if(_indexes.length == 2) {
-      this._tabController.index = _indexes[0];
-      this._secondIndex = _indexes[1];
-    }
+    this._tabController.index = _indexes[0]
+      ?? PaletteTab.findClosestTabIndex(_tabs, widget.color) ?? 0;
+    this._colorIndex = _indexes[1];
 
     /// NOT REALLY SURE WHY IT WAS NEEDED, ON  TAP SHOULD TAKE CARE OF THIS
     // this._tabController.addListener((){
@@ -73,10 +68,9 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
     super.didUpdateWidget(oldWidget);
     if(oldWidget.color != widget.color){
       List<int> _indexes = this.find(widget.color);
-      if(_indexes.length == 2) {
-        this._tabController.index = _indexes[0];
-        this._secondIndex = _indexes[1];
-      }
+      this._tabController.index = _indexes[0] 
+        ?? PaletteTab.findClosestTabIndex(_tabs, widget.color) ?? 0;
+      this._colorIndex = _indexes[1];
     }
   }
 
@@ -87,7 +81,9 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
   }
   
 
-  Color get currentColor => this._thisColors[this._tabController.index].shades[this._secondIndex];
+  Color get currentColor => this._colorIndex == null 
+    ? null 
+    : _tabs[_tabController.index].shades[_colorIndex];
 
   @override
   Widget build(BuildContext context) {
@@ -97,17 +93,17 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
         constraints: BoxConstraints(maxHeight: 64,),
         child: TabBar(
           onTap: (int i) => setState(() {
-            this._secondIndex = this._thisColors[i].defaultIndex;
+            this._colorIndex = this._tabs[i].defaultIndex;
             widget.onChanged(this.currentColor);
           }),
           isScrollable: true,
           dragStartBehavior: DragStartBehavior.down,
           indicatorColor: Theme.of(context).textTheme.bodyText2.color,
           indicatorWeight: 3.0,
-          tabs: List.generate(this._thisColors.length, (int i){
+          tabs: List.generate(this._tabs.length, (int i){
             return Tab(
-              text: this._thisColors[i].name,
-              icon: Icon(MaterialCommunityIcons.circle, color: this._thisColors[i].defaultColor,),
+              text: this._tabs[i].name,
+              icon: Icon(MaterialCommunityIcons.circle, color: this._tabs[i].defaultColor,),
             );
           }),
           controller: this._tabController,
@@ -129,7 +125,7 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
           child: TabBarView(
             controller: this._tabController,
             children: <Widget>[
-              for(int tabI = 0; tabI < this._thisColors.length; ++tabI)
+              for(int tabI = 0; tabI < this._tabs.length; ++tabI)
                 ListView(
                   physics: SidereusScrollPhysics(
                     alwaysScrollable: true,
@@ -139,11 +135,11 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
                   ),
                   children: <Widget>[
                     for(final couple in <Widget>[
-                      for(int colorI=0; colorI<_thisColors[tabI].shades.length; ++colorI)
+                      for(int colorI=0; colorI<_tabs[tabI].shades.length; ++colorI)
                         _buildTile(
                           colorIndex: colorI,
-                          color: this._thisColors[tabI].shades[colorI],
-                          len: this._thisColors[tabI].shades.length,
+                          color: this._tabs[tabI].shades[colorI],
+                          len: this._tabs[tabI].shades.length,
                           maxH: constraints.maxHeight,
                           minH: 58,
                         ),
@@ -192,7 +188,7 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
       child: InkWell(
         onTap: (){
           setState(() {
-            this._secondIndex = colorIndex; 
+            this._colorIndex = colorIndex; 
             widget.onChanged(this.currentColor);
           });
         },
@@ -203,7 +199,7 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                "#FF${colorToHex(color)}",
+                "#FF${color.hexString}",
                 style: TextStyle(
                   fontWeight: FontWeight.w700, 
                   color: text,
