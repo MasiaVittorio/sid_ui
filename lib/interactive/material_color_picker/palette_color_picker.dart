@@ -209,6 +209,7 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
                   color: text,
                 ),
               ),
+              // TODO: nonsense, la prima volta che viene trovato il closest qua va non mostra il selezionato
               Icon(Icons.check, color: check ? text : Colors.transparent),
             ],
           ),

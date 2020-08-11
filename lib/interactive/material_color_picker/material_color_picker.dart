@@ -8,8 +8,6 @@ import 'custom_color_picker.dart';
 import 'palette_color_picker.dart';
 import 'components/simple_nav_bar.dart';
 
-// TODO: non trova più il material closest
-
 enum ColorPickerMode{
   palette,
   manual,
