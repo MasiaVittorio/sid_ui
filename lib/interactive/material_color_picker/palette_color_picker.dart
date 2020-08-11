@@ -29,23 +29,20 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
 
   TabController _tabController;
 
-  int _secondIndex=0;
+  int _secondIndex = 0;
 
-  List<List<Color>> get allShades => this._thisColors.map<List<Color>>((ThisDoubleColor dbc){
-    return dbc.shades;
-  }).toList();
+  List<List<Color>> get allShades => <List<Color>>[
+    for(final dbc in _thisColors)
+      dbc.shades,
+  ];
 
   List<int> find(Color c){
-
-    int _mainIndexSearch = 0;
-    while(_mainIndexSearch < this._thisColors.length){
-      final _dblc = this._thisColors[_mainIndexSearch];
+    for(int i=0; i < this._thisColors.length; ++i){
+      final _dblc = this._thisColors[i];
       if(_dblc.shades.contains(c)){
-        return [_mainIndexSearch,_dblc.shades.indexOf(c)];
+        return [i,_dblc.shades.indexOf(c)];
       }
-      ++_mainIndexSearch;
     }
-
     return <int>[];
   }
 
@@ -58,20 +55,34 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
     );
     List<int> _indexes = this.find(widget.color);
     if(_indexes.length == 2) {
-      this._tabController.index=_indexes[0];
+      this._tabController.index = _indexes[0];
       this._secondIndex = _indexes[1];
     }
 
-    this._tabController.addListener((){
-      this._secondIndex = this._thisColors[this._tabController.index].defaultIndex;
-      widget.onChanged(this.currentColor);
-    });
+    /// NOT REALLY SURE WHY IT WAS NEEDED, ON  TAP SHOULD TAKE CARE OF THIS
+    // this._tabController.addListener((){
+    //   this._secondIndex = this._thisColors[this._tabController.index].defaultIndex;
+    //   widget.onChanged(this.currentColor);
+    // });
+    /// NOT REALLY SURE WHY IT WAS NEEDED, ON  TAP SHOULD TAKE CARE OF THIS
 
   }
 
   @override
+  void didUpdateWidget(PaletteColorPicker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget.color != widget.color){
+      List<int> _indexes = this.find(widget.color);
+      if(_indexes.length == 2) {
+        this._tabController.index = _indexes[0];
+        this._secondIndex = _indexes[1];
+      }
+    }
+  }
+
+  @override
   void dispose(){
-    this._tabController.dispose();
+    this._tabController?.dispose();
     super.dispose();
   }
   
@@ -110,42 +121,42 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
       ),
     );
     
-    final Widget _column = LayoutBuilder(
-      builder: (BuildContext c, BoxConstraints constraints){
-        return Container(
+    final Widget _column = Theme(
+      data: Theme.of(context).copyWith(accentColor: Colors.white),
+      child: LayoutBuilder(builder: (_, constraints){
+        return ConstrainedBox(
           constraints: constraints,
           child: TabBarView(
             controller: this._tabController,
-            children: List.generate(
-              this._thisColors.length,
-              (int iii)  => Theme(
-                data: Theme.of(context).copyWith(accentColor: Colors.white),
-                child: ListView(
+            children: <Widget>[
+              for(int tabI = 0; tabI < this._thisColors.length; ++tabI)
+                ListView(
                   physics: SidereusScrollPhysics(
                     alwaysScrollable: true,
                     bottomBounce: false,
                     topBounce: this.widget.paletteUndescrollCallback != null,
                     topBounceCallback: this.widget.paletteUndescrollCallback,
                   ),
-                  children: List.generate(
-                    (this._thisColors[iii].shades.length/2).ceil(), 
-                    (int i){
-                      return _buildTile( 
-                        i2first: i*2 , 
-                        i2second: i*2+1, 
-                        len: this._thisColors[iii].shades.length, 
-                        tabIndex: iii,
-                        minH: 58,
-                        maxH: constraints.maxHeight,
-                      );
-                    }
-                  )
+                  children: <Widget>[
+                    for(final couple in <Widget>[
+                      for(int colorI=0; colorI<_thisColors[tabI].shades.length; ++colorI)
+                        _buildTile(
+                          colorIndex: colorI,
+                          color: this._thisColors[tabI].shades[colorI],
+                          len: this._thisColors[tabI].shades.length,
+                          maxH: constraints.maxHeight,
+                          minH: 58,
+                        ),
+                    ].part(2))
+                      Row(children: [
+                        for(final child in couple) Expanded(child: child),
+                      ],),
+                  ],
                 ),
-              ),
-            ), 
-          )
+            ],
+          ),
         );
-      }
+      },),
     );
 
     final Widget _divider = Divider(height: 0.0,);
@@ -163,58 +174,48 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
 
 
   Widget _buildTile({
-    int i2first, 
-    int i2second, 
-    int len, 
-    int tabIndex,
-    double minH,
-    double maxH,
+    @required int colorIndex,
+    @required Color color, 
+    @required int len, 
+    @required double minH,
+    @required double maxH,
   }){
 
     int _rows = (len/2).ceil();
     double _height = math.max(minH, maxH/_rows);
 
-    Widget _tile(int i2){
-      final Color _clr = this._thisColors[tabIndex].shades[i2];
-      return  Theme(
-        data: ThemeData.estimateBrightnessForColor(_clr) == Brightness.dark ? ThemeData.dark() : ThemeData.light(),
-        child:Material(
-          color: _clr,
-          child: InkWell(
-            onTap: (){
-              setState(() {
-                this._secondIndex = i2; 
-                widget.onChanged(this.currentColor);
-              });
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              height: _height,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    "#FF${colorToHex(_clr)}",
-                    style: TextStyle(fontWeight: FontWeight.w700, ),
-                  ),
-                  if(this._secondIndex == i2 && this._tabController.index == tabIndex) 
-                    Icon(Icons.check),
-                ],
-              ),
-            ),
-          )
-        )
-      );
-    }
+    final bool check = this.currentColor == color;
+    final Color text = color.contrast;
 
-    return i2second >= len
-      ? _tile(i2first)
-      : Row(
-        children: <Widget>[
-          Expanded(child: _tile(i2first)),
-          Expanded(child: _tile(i2second)),
-        ],
-      );
+    return Material(
+      color: color,
+      child: InkWell(
+        onTap: (){
+          setState(() {
+            this._secondIndex = colorIndex; 
+            widget.onChanged(this.currentColor);
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          height: _height,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "#FF${colorToHex(color)}",
+                style: TextStyle(
+                  fontWeight: FontWeight.w700, 
+                  color: text,
+                ),
+              ),
+              Icon(Icons.check, color: check ? text : Colors.transparent),
+            ],
+          ),
+        ),
+      )
+    );
+
   }
 
 }

@@ -28,8 +28,6 @@ class RadioNavBar<T> extends StatelessWidget {
       super(key: key){
         assert(shifting != null);
       }
-
-  // TODO: colored but not shifting? accent the selected text with color
   
 
   //=============================================

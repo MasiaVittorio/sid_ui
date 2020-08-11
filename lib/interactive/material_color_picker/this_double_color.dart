@@ -7,7 +7,7 @@ Color findClosest(Color color){
   Color closest = Colors.black;
   double minDistance = double.infinity;
   for(final c in allMaterialPalette){
-    final double newDistance = c.distance(color);
+    double newDistance = c.distance(color);
     if(newDistance < minDistance){
       minDistance = newDistance;
       closest = c;
@@ -170,8 +170,7 @@ final List<ThisDoubleColor> materialPalette = [
   ThisDoubleColor(mains: [Colors.black, Colors.white], name: 'B&W'),
 ];
 
-List<Color> get allMaterialPalette => getAllMaterialPalette();
-List<Color> getAllMaterialPalette(){
+List<Color> get allMaterialPalette {
   List<Color> result = <Color>[];
   for(final x in materialPalette) result.addAll(x.shades);
   return result;

@@ -58,41 +58,8 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
       ).toUpperCase(),
     );
     
-    // this._clipboardString = null;
-    // this._getClipboardAndCheck();
   }
 
-  // Future<void> _getClipboardAndCheck() async {
-  //   final cbd = await Clipboard.getData("text/plain");
-  //   setState(() {
-  //     this._clipboardString = this._pasteChecker(cbd.text);
-  //   });
-  //   return;
-  // }
-
-  // String _pasteCheckerHex(String input){
-  //   if(input.length < 6) input = input.padLeft(6, '0');
-  //   else if(input.length > 6) input = input.substring(input.length-6);
-
-  //   if(checkForHexString(input)) 
-  //     return input;
-  //   else 
-  //     return null;
-  // }
-
-  // String _pasteChecker(String input){
-  //   if(input == null) return null;
-
-  //   String output;
-
-  //   output = this._pasteCheckerHex(input);
-    
-  //   if(output == null) return null;
-
-  //   return output.length > 6
-  //     ? output.substring(0,6)
-  //     : output;
-  // }
 
   void _reset(){
     this._color = widget.color?.withAlpha(255) 
