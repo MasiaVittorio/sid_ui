@@ -16,6 +16,18 @@ class RadioSliderThemeData {
     this.height = RadioSlider._kHeight,
     this.margin = RadioSlider._kMargin,
   });
+
+  RadioSliderThemeData mergeWith(RadioSliderThemeData other) 
+    => RadioSliderThemeData(
+      elevateSlider: other?.elevateSlider ?? this.elevateSlider 
+        ?? RadioSlider._kElevateSlider,
+      selectedColor: other?.selectedColor ?? this.selectedColor,
+      backgroundColor: other?.backgroundColor ?? this.backgroundColor,      
+      hideOpenIcons: other?.hideOpenIcons ?? this.hideOpenIcons,      
+      height: other?.height ?? this.height ?? RadioSlider._kHeight,      
+      margin: other?.margin ?? this.margin ?? RadioSlider._kMargin,
+    );
+  
 }
 
 class RadioSliderTheme extends StatefulWidget {
@@ -36,6 +48,15 @@ class RadioSliderTheme extends StatefulWidget {
       context.getElementForInheritedWidgetOfExactType<_RadioSliderThemeInherited>()?.widget;
     return provider?.data;
   }
+
+  static Widget merge({
+    @required RadioSliderThemeData data,
+    @required Widget child,
+  }) => Builder(builder: (context) => RadioSliderTheme(
+    data: RadioSliderTheme.of(context)?.mergeWith(data) ?? data,
+    child: child,
+  ),);
+
 }
 
 class _RadioSliderThemeState extends State<RadioSliderTheme>{
