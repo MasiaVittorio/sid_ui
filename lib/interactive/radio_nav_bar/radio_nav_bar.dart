@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:sid_ui/animated/showers/animated_listed.dart';
 import 'package:sid_ui/animated/splashing_colored_background.dart';
@@ -21,6 +22,7 @@ class RadioNavBar<T> extends StatelessWidget {
     this.forceBrightness,
     this.accentTextColor,
     bool googleLike = false,
+    this.badges,
     Key key,
   }): shifting = RadioNavBarItem.allColoredItems(items.values) ?? false,
       tileSize = tileSize ?? defaultTileSize,
@@ -47,6 +49,7 @@ class RadioNavBar<T> extends StatelessWidget {
   final Brightness forceBrightness;
   /// "white" (canvas) background, different accent color per page
   final bool googleLike;
+  final Map<T, bool> badges; // if not null, true values will show a badge over the icon
 
 
   static double bottomPaddingFromMQ(MediaQueryData mediaQuery)
@@ -142,6 +145,7 @@ class RadioNavBar<T> extends StatelessWidget {
                 },
               )),
               _Tile(items[value], 
+                badge: badges == null ? false : (badges[value] ?? false),
                 accentTextColor: _accentTextColor,
                 duration: duration,
                 selected: value == this.selectedValue,
@@ -177,7 +181,9 @@ class _Tile extends StatelessWidget {
   final double height;
   final Duration duration;
   final Color accentTextColor;
+  final bool badge;
   _Tile(this.item, {
+    @required this.badge,
     @required this.duration,
     @required this.selected,
     @required this.onTap,
@@ -188,6 +194,7 @@ class _Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return InkResponse(
       onTap: onTap,
       containedInkWell: false,
@@ -199,12 +206,22 @@ class _Tile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            _Icon(item,
-              duration: duration,
-              animated: animatedIcon,
-              selected: selected,
-              height: height,
-              accentTextColor: accentTextColor,
+            Badge(
+              showBadge: badge && !selected,
+              badgeContent: null,
+              toAnimate: false,
+              shape: BadgeShape.circle,
+              // alignment: Alignment.topRight,
+              badgeColor: Theme.of(context).accentColor,
+              position: BadgePosition.topEnd(top: 8, end: 8),
+              ignorePointer: true,
+              child: _Icon(item,
+                duration: duration,
+                animated: animatedIcon,
+                selected: selected,
+                height: height,
+                accentTextColor: accentTextColor,
+              ),
             ),
             _Label(item,
               duration: duration,
