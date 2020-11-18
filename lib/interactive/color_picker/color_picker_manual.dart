@@ -375,7 +375,7 @@ class _PalettePainter extends CustomPainter{
 
   final Offset ratio;
   final Color circleColor;
-  _PalettePainter({Key key, this.ratio, this.circleColor}):super();
+  _PalettePainter({this.ratio, this.circleColor}):super();
 
   @override
   void paint(Canvas canvas, Size size) {
