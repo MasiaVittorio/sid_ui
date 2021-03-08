@@ -1384,6 +1384,8 @@ class _RenderSlider extends RenderBox {
         sliderTheme: _sliderTheme,
         textDirection: _textDirection,
         value: _value,
+        sizeWithOverflow: Size.zero, //TODO: check?
+        textScaleFactor: 1.0, 
       );
     }
 
@@ -1429,6 +1431,8 @@ class _RenderSlider extends RenderBox {
           sliderTheme: _sliderTheme,
           textDirection: _textDirection,
           value: _value,
+          sizeWithOverflow: Size.zero, //TODO: check?
+          textScaleFactor: 1.0, 
         );
       }
     }
@@ -1444,6 +1448,8 @@ class _RenderSlider extends RenderBox {
       sliderTheme: _sliderTheme,
       textDirection: _textDirection,
       value: _value,
+      sizeWithOverflow: Size.zero, //TODO: check?
+      textScaleFactor: 1.0, 
     );
   }
 

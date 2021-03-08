@@ -172,13 +172,13 @@ class _InsertDialogState extends State<InsertDialog> {
         ],
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text("Cancel"),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text("Confirm"),
           
           onPressed: _error ? null : () {

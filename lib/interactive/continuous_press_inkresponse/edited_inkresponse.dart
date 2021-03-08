@@ -686,7 +686,7 @@ class _InkResponseState extends State<_InkResponseStateWidgetWithLongPressUp>
   }
 
   bool get _shouldShowFocus {
-    final NavigationMode mode = MediaQuery.of(context, nullOk: true)?.navigationMode ?? NavigationMode.traditional;
+    final NavigationMode mode = (context != null ? MediaQuery.of(context) : null)?.navigationMode ?? NavigationMode.traditional;
     switch (mode) {
       case NavigationMode.traditional:
         return enabled && _hasFocus;
@@ -818,7 +818,7 @@ class _InkResponseState extends State<_InkResponseStateWidgetWithLongPressUp>
   }
 
   bool get _canRequestFocus {
-    final NavigationMode mode = MediaQuery.of(context, nullOk: true)?.navigationMode ?? NavigationMode.traditional;
+    final NavigationMode mode = (context != null ? MediaQuery.of(context) : null)?.navigationMode ?? NavigationMode.traditional;
     switch (mode) {
       case NavigationMode.traditional:
         return enabled && widget.canRequestFocus;

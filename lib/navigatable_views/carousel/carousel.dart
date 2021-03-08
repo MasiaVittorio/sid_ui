@@ -684,7 +684,7 @@ Future<T> showCarousel<T>({
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   return Navigator.push(context, _ModalBottomSheetRoute<T>(
-    theme: Theme.of(context, shadowThemeOnly: true),
+    theme: Theme.of(context, ),//shadowThemeOnly: true),
     barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
     backgroundColor: backgroundColor,
     positionedItemBuilder: positionedItemBuilder,
