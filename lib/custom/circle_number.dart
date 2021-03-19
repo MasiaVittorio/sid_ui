@@ -16,6 +16,8 @@ class CircleNumber extends StatefulWidget {
 
   final TextStyle style;
 
+  final Widget extraIcon;
+
 
   CircleNumber({
     @required this.duration,
@@ -27,6 +29,7 @@ class CircleNumber extends StatefulWidget {
     @required this.increment,
     @required this.color,
     @required this.style,
+    this.extraIcon,
     Key key,
   }):super(key: key);
 
@@ -97,6 +100,18 @@ class _CircleNumberState extends State<CircleNumber> with TickerProviderStateMix
         width: size*3,
         height: size,
         child: Stack(children: <Widget>[
+          
+          if(widget.extraIcon != null)
+            Positioned(
+              left: 0,
+              child: SizedBox(
+                width: size,
+                height: size,
+                child: Center(
+                  child: widget.extraIcon
+                ),
+              ),
+            ),
           Positioned(
             left: 0,
             child: SizedBox(
