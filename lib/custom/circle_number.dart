@@ -101,17 +101,6 @@ class _CircleNumberState extends State<CircleNumber> with TickerProviderStateMix
         height: size,
         child: Stack(children: <Widget>[
           
-          if(widget.extraIcon != null)
-            Positioned(
-              left: 0,
-              child: SizedBox(
-                width: size,
-                height: size,
-                child: Center(
-                  child: widget.extraIcon
-                ),
-              ),
-            ),
           Positioned(
             left: 0,
             child: SizedBox(
@@ -163,6 +152,19 @@ class _CircleNumberState extends State<CircleNumber> with TickerProviderStateMix
 
     double size = widget.size;
 
+    final Widget extraIconPositioned = widget.extraIcon == null 
+      ? null
+      :  Positioned(
+        left: 0,
+        child: SizedBox(
+          width: size,
+          height: size,
+          child: Center(
+            child: widget.extraIcon
+          ),
+        ),
+      );
+
     final Widget content = AnimatedBuilder(
       animation: this.moveController,
       child: text,
@@ -171,6 +173,8 @@ class _CircleNumberState extends State<CircleNumber> with TickerProviderStateMix
           fit: StackFit.expand,
           alignment: Alignment.centerLeft,
           children: <Widget>[
+            if(widget.extraIcon != null)
+              extraIconPositioned,
             Positioned(
               top: 0.0,
               bottom: 0.0,
