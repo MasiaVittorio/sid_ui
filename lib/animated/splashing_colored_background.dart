@@ -10,11 +10,11 @@ class SplashingColoredBackground extends StatefulWidget {
     this.duration = const Duration(milliseconds: 360),
   });
 
-  final Color color;
-  final Curve curve;
+  final Color? color;
+  final Curve? curve;
   final Alignment alignment;
   final Duration duration;
-  final Widget child;
+  final Widget? child;
 
 
   @override
@@ -22,10 +22,10 @@ class SplashingColoredBackground extends StatefulWidget {
 }
 
 class _SplashingColoredBackgroundState extends State<SplashingColoredBackground> with TickerProviderStateMixin {
-  Color _color;
-  Color _circleColor;
+  Color? _color;
+  Color? _circleColor;
 
-  AnimationController _controller;
+  AnimationController? _controller;
 
   @override
   void initState() {
@@ -47,16 +47,16 @@ class _SplashingColoredBackgroundState extends State<SplashingColoredBackground>
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller!.dispose();
     super.dispose();
   }
 
   void _pushCircle() {
     if (widget.color != null) {
       _color = _circleColor;
-      _controller.value = 0.0;
+      _controller!.value = 0.0;
       _circleColor = widget.color;
-      _controller.animateTo(
+      _controller!.animateTo(
         1.0, 
         curve: widget.curve ?? Curves.linear
       ).then((_){
@@ -73,7 +73,7 @@ class _SplashingColoredBackgroundState extends State<SplashingColoredBackground>
     if (_circleColor != widget.color) {
       _pushCircle();
     } 
-    if(widget.duration != _controller.duration){
+    if(widget.duration != _controller!.duration){
       _resetController();
     }
   }
@@ -84,13 +84,13 @@ class _SplashingColoredBackgroundState extends State<SplashingColoredBackground>
     return Container(
       color: _color,
       child: AnimatedBuilder(
-        animation: _controller,
+        animation: _controller!,
         child: widget.child ?? Container(),
         builder: (context, child) => CustomPaint(
           painter: _RadialPainter(
             alignment: widget.alignment,
-            color: _circleColor,
-            value: Curves.easeOut.transform(_controller.value),
+            color: _circleColor!,
+            value: Curves.easeOut.transform(_controller!.value),
           ),
           child: child,
         ),
@@ -105,12 +105,10 @@ class _SplashingColoredBackgroundState extends State<SplashingColoredBackground>
 // Paints the animating color splash circles.
 class _RadialPainter extends CustomPainter {
   _RadialPainter({
-    @required this.color,
-    @required this.value,
-    @required this.alignment,
-  }) : assert(color != null),
-       assert(value != null),
-       assert(alignment != null);
+    required this.color,
+    required this.value,
+    required this.alignment,
+  });
 
   final Color color;
   final double value;

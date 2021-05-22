@@ -6,8 +6,8 @@ class Section extends StatelessWidget {
   final List<Widget> children;
   final bool last;
   final bool stretch;
-  final DecorationImage image;
-  final Color backgroundColor;
+  final DecorationImage? image;
+  final Color? backgroundColor;
 
   const Section(this.children, {
     this.last = false,
@@ -46,7 +46,7 @@ class Section extends StatelessWidget {
 class SectionTitle extends StatelessWidget {
   final String title;
   final bool animated;
-  final Color overrideColor;
+  final Color? overrideColor;
   const SectionTitle(this.title, {
     this.animated = false,
     this.overrideColor,
@@ -61,7 +61,7 @@ class SectionTitle extends StatelessWidget {
         Theme.of(context), 
         fallbackOnTextTheme: true
       ).onCanvas,
-      fontWeight: textStyle.fontWeight.increment,
+      fontWeight: textStyle.fontWeight?.increment,
     );
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),

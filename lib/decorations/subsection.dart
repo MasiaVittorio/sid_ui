@@ -6,11 +6,11 @@ class SubSection extends StatelessWidget {
   final MainAxisAlignment mainAxisAlignment;
   final MainAxisSize mainAxisSize;
   final EdgeInsets margin;
-  final VoidCallback onTap;
-  final VoidCallback onLongPress;
+  final VoidCallback? onTap;
+  final VoidCallback? onLongPress;
   final BorderRadius borderRadius;
   final bool color;
-  final Color overrideColor;
+  final Color? overrideColor;
 
   const SubSection.withoutMargin(this.children, {
     this.crossAxisAlignment = CrossAxisAlignment.start, 
@@ -21,8 +21,7 @@ class SubSection extends StatelessWidget {
     this.borderRadius = borderRadiusDefault,
     this.color = true,
     this.overrideColor,
-  }): assert(crossAxisAlignment != null),
-      margin = EdgeInsets.zero;
+  }): margin = EdgeInsets.zero;
 
   const SubSection(this.children, {
     this.crossAxisAlignment = CrossAxisAlignment.start, 
@@ -34,8 +33,7 @@ class SubSection extends StatelessWidget {
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,
     this.overrideColor,
-  }): assert(crossAxisAlignment != null),
-      assert(margin != null);
+  });
 
   const SubSection.stretch(this.children, {
     this.margin = const EdgeInsets.symmetric(horizontal:10),
@@ -46,8 +44,7 @@ class SubSection extends StatelessWidget {
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,
     this.overrideColor,
-  }): assert(margin != null),
-      crossAxisAlignment = CrossAxisAlignment.stretch;
+  }): crossAxisAlignment = CrossAxisAlignment.stretch;
 
   static Color getColor(ThemeData theme) => theme.scaffoldBackgroundColor.withOpacity(0.7);
 
@@ -75,7 +72,7 @@ class SubSection extends StatelessWidget {
           child: Column(
             mainAxisAlignment: this.mainAxisAlignment,
             crossAxisAlignment: this.crossAxisAlignment,
-            mainAxisSize: this.mainAxisSize ?? MainAxisSize.min,
+            mainAxisSize: this.mainAxisSize,
             children: this.children,
           ),
         ),

@@ -4,13 +4,13 @@ import 'animated_presented.dart';
 class RadioPageTransition<A> extends StatelessWidget {
 
   RadioPageTransition({
-    @required this.page,
-    @required this.previous,
-    @required this.children,
-    @required this.orderedPages,
+    required this.page,
+    required this.previous,
+    required this.children,
+    required this.orderedPages,
     this.canvasBackground = false,
     this.offset = 100,
-  }) : assert(offset != null && offset > 0);
+  }) : assert(offset > 0);
   final A page;
   final A previous;
   final List<A> orderedPages;
@@ -22,7 +22,7 @@ class RadioPageTransition<A> extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return Material(
-      color: (canvasBackground ?? false) ? theme.canvasColor : theme.scaffoldBackgroundColor,
+      color: canvasBackground ? theme.canvasColor : theme.scaffoldBackgroundColor,
       child: Stack(fit: StackFit.expand, children: <Widget>[
         for(final entry in children.entries)
           AnimatedPresented(

@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 class AnimatedSwitchingIcon extends StatefulWidget {
   final AnimatedIconData firstIcon;
   final AnimatedIconData secondIcon;
-  final Animation<double> progress;
-  final Color color;
-  final double size;
-  final TextDirection textDirection;
-  final String semanticLabel;
+  final Animation<double?> progress;
+  final Color? color;
+  final double? size;
+  final TextDirection? textDirection;
+  final String? semanticLabel;
 
   AnimatedSwitchingIcon({
-    @required this.firstIcon,
-    @required this.secondIcon,
-    @required this.progress,
+    required this.firstIcon,
+    required this.secondIcon,
+    required this.progress,
     this.color,
     this.size,
     this.textDirection,
@@ -24,17 +24,17 @@ class AnimatedSwitchingIcon extends StatefulWidget {
 
 class _AnimatedSwitchingIconState extends State<AnimatedSwitchingIcon> {
 
-  bool first;
+  late bool first;
 
   void listener(){
     if(this.mounted != true)
       return;
 
-    double v = this.widget.progress.value;
+    double? v = this.widget.progress.value;
     reactTo(v);
   }
 
-  void reactTo(double v){
+  void reactTo(double? v){
     if(v == 0.0) 
       this.setState((){
         this.first = true;
@@ -79,8 +79,8 @@ class _AnimatedSwitchingIconState extends State<AnimatedSwitchingIcon> {
         ? this.widget.firstIcon 
         : this.widget.secondIcon,
       progress: this.first 
-        ? this.widget.progress
-        : ReverseAnimation(this.widget.progress),
+        ? this.widget.progress as Animation<double>
+        : ReverseAnimation(this.widget.progress as Animation<double>),
       color: this.widget.color,
       size: this.widget.size,
       semanticLabel: this.widget.semanticLabel,

@@ -9,13 +9,13 @@ import 'models/palette.dart';
 import 'dart:math' as math;
 
 class PaletteColorPicker extends StatefulWidget {
-  final Color color;
-  final Function(Color) onChanged;
-  final void Function() paletteUndescrollCallback;
+  final Color? color;
+  final Function(Color?) onChanged;
+  final void Function()? paletteUndescrollCallback;
 
   PaletteColorPicker({
-    @required this.color,
-    @required this.onChanged,
+    required this.color,
+    required this.onChanged,
     this.paletteUndescrollCallback,
   });
 
@@ -27,11 +27,11 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
 
   final List<PaletteTab> _tabs = PaletteTab.allTabs;
 
-  TabController _tabController;
+  TabController? _tabController;
 
-  int _colorIndex;
+  int? _colorIndex;
 
-  List<int> find(Color c){
+  List<int?> find(Color? c){
     for(int tabI=0; tabI < this._tabs.length; ++tabI){
       final tab = this._tabs[tabI];
       for(int colI=0; colI<tab.shades.length; ++colI){
@@ -39,7 +39,7 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
           return [tabI,colI];
       }
     }
-    return <int>[null, null];
+    return <int?>[null, null];
   }
 
   @override
@@ -49,8 +49,8 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
       length: this._tabs.length,
       vsync: this,
     );
-    List<int> _indexes = this.find(widget.color);
-    this._tabController.index = _indexes[0]
+    List<int?> _indexes = this.find(widget.color);
+    this._tabController!.index = _indexes[0]
       ?? PaletteTab.findClosestTabIndex(_tabs, widget.color) ?? 0;
     this._colorIndex = _indexes[1];
 
@@ -67,8 +67,8 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
   void didUpdateWidget(PaletteColorPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
     if(oldWidget.color != widget.color){
-      List<int> _indexes = this.find(widget.color);
-      this._tabController.index = _indexes[0] 
+      List<int?> _indexes = this.find(widget.color);
+      this._tabController!.index = _indexes[0] 
         ?? PaletteTab.findClosestTabIndex(_tabs, widget.color) ?? 0;
       this._colorIndex = _indexes[1];
     }
@@ -81,9 +81,9 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
   }
   
 
-  Color get currentColor => this._colorIndex == null 
+  Color? get currentColor => this._colorIndex == null 
     ? null 
-    : _tabs[_tabController.index].shades[_colorIndex];
+    : _tabs[_tabController!.index].shades[_colorIndex!];
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +98,7 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
           }),
           isScrollable: true,
           dragStartBehavior: DragStartBehavior.down,
-          indicatorColor: Theme.of(context).textTheme.bodyText2.color,
+          indicatorColor: Theme.of(context).textTheme.bodyText2?.color,
           indicatorWeight: 3.0,
           tabs: List.generate(this._tabs.length, (int i){
             return Tab(
@@ -108,11 +108,9 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
           }),
           controller: this._tabController,
           unselectedLabelStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
-          labelColor: Theme.of(context).textTheme.bodyText2.color,
+          labelColor: Theme.of(context).textTheme.bodyText2?.color,
           labelStyle: TextStyle(fontWeight: FontWeight.w700),
-          unselectedLabelColor: Theme.of(context).textTheme.bodyText2.color != null 
-            ? Theme.of(context).textTheme.bodyText2.color.withOpacity(0.5)
-            : null,
+          unselectedLabelColor: Theme.of(context).textTheme.bodyText2?.color?.withOpacity(0.5),
         ),
       ),
     );
@@ -145,7 +143,7 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
                         ),
                     ].part(2))
                       Row(children: [
-                        for(final child in couple) Expanded(child: child),
+                        for(final child in couple!) Expanded(child: child),
                       ],),
                   ],
                 ),
@@ -170,11 +168,11 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
 
 
   Widget _buildTile({
-    @required int colorIndex,
-    @required Color color, 
-    @required int len, 
-    @required double minH,
-    @required double maxH,
+    required int colorIndex,
+    required Color color, 
+    required int len, 
+    required double minH,
+    required double maxH,
   }){
 
     int _rows = (len/2).ceil();

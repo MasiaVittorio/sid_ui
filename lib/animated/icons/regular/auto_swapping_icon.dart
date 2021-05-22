@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 class AutoSwappingIcon extends StatefulWidget {
   final IconData icon;
-  final Color color;
-  final double size;
+  final Color? color;
+  final double? size;
   final Duration duration;
-  final double opacity;
+  final double? opacity;
 
   AutoSwappingIcon({
-    Key key,
-    @required this.icon,
+    Key? key,
+    required this.icon,
     this.color,
     this.size,
     this.opacity,
@@ -25,11 +25,11 @@ class AutoSwappingIcon extends StatefulWidget {
 
 class AutoSwappingIconState extends State<AutoSwappingIcon> with TickerProviderStateMixin{
 
-  Animation<double> _step;
-  AnimationController _controller;
-  bool _current;
-  IconData _firstData;
-  IconData _secondData;
+  late Animation<double> _step;
+  late AnimationController _controller;
+  late bool _current;
+  IconData? _firstData;
+  IconData? _secondData;
 
   @override
   void initState() {

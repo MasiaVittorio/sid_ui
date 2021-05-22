@@ -6,15 +6,14 @@ class ContinuousPressInkResponse extends StatefulWidget {
   ContinuousPressInkResponse({
     this.onTap,
     this.onTapDown,
-    @required this.whileLongPress,
-    @required this.interval,
+    required this.whileLongPress,
+    required this.interval,
     this.child,
     this.containedInkWell = false,
-  }): assert(whileLongPress != null),
-      assert(interval != null);
+  });
 
-  final VoidCallback onTap;
-  final void Function(TapDownDetails) onTapDown;
+  final VoidCallback? onTap;
+  final void Function(TapDownDetails)? onTapDown;
 
   final VoidCallback whileLongPress;
   final Duration interval;
@@ -59,7 +58,7 @@ class _ContinuousPressInkResponseState extends State<ContinuousPressInkResponse>
       onTap: widget.onTap,
       onLongPress: start,
       onLongPressUp: end,
-      containedInkWell: widget.containedInkWell ?? false,
+      containedInkWell: widget.containedInkWell,
     );
   }
 

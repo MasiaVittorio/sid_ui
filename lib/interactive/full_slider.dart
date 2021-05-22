@@ -3,27 +3,27 @@ import 'package:sid_utils/sid_utils.dart';
 
 class FullSlider extends StatefulWidget {
 
-  final Widget leading;
-  final Widget Function(double) leadingBuilder;
+  final Widget? leading;
+  final Widget Function(double)? leadingBuilder;
 
-  final Widget title;
-  final Widget Function(double) titleBuilder;
+  final Widget? title;
+  final Widget Function(double)? titleBuilder;
 
-  final Widget trailing;
-  final Widget Function(double) trailingBuilder; // if there is the builder, the single widget is ignored
+  final Widget? trailing;
+  final Widget Function(double)? trailingBuilder; // if there is the builder, the single widget is ignored
 
-  final double defaultValue; //if not null, a reset button will be displayed
+  final double? defaultValue; //if not null, a reset button will be displayed
   final double value;
-  final ValueChanged<double> onChanged;
+  final ValueChanged<double?>? onChanged;
   // final ValueChanged<double> onChangeStart;
-  final ValueChanged<double> onChangeEnd;
+  final ValueChanged<double?>? onChangeEnd;
 
   final double min;
   final double max;
 
   /// number of divisions, after each gesture the value is adjusted to the nearest division
   /// tap right to += by a division, tap left to -= by a division. if null, taps are ignored
-  final int divisions; 
+  final int? divisions; 
 
   final double crossAxisSize;
 
@@ -31,12 +31,12 @@ class FullSlider extends StatefulWidget {
 
   final double radius;
 
-  final Color accentColor;
+  final Color? accentColor;
 
   final bool enabled;
 
   const FullSlider({
-    @required this.value,
+    required this.value,
     this.onChangeEnd,
     // this.onChangeStart,
     this.onChanged,
@@ -60,14 +60,7 @@ class FullSlider extends StatefulWidget {
     this.crossAxisSize = 56.0,
     this.scrollDirection = Axis.horizontal,
     this.radius = 8.0,
-  }): assert(min != null),
-      assert(max != null),
-      assert(max > min),
-      assert(crossAxisSize != null),
-      assert(scrollDirection != null),
-      assert(radius != null),
-      
-      assert(value != null);
+  }): assert(max > min);
 
   @override
   _FullSliderState createState() => _FullSliderState();
@@ -76,8 +69,8 @@ class FullSlider extends StatefulWidget {
 
 class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateMixin {
 
-  AnimationController controller;
-  double _prevTapTarget;
+  AnimationController? controller;
+  double? _prevTapTarget;
 
   @override
   void initState() {
@@ -106,7 +99,7 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
     final oldAnimationVal = widgetToAnimation(oldWidget.value);
     final newAnimationVal = widgetToAnimation(widget.value);
     if(oldAnimationVal != newAnimationVal){
-      controller.value = newAnimationVal;
+      controller!.value = newAnimationVal;
     }
   }
 
@@ -125,18 +118,18 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
   bool get horizontal => widget.scrollDirection == Axis.horizontal;
   bool get vertical => widget.scrollDirection == Axis.vertical;
 
-  Widget buildAnimated(Widget Function(double) builder) => AnimatedBuilder(
-    animation: controller, 
-    builder: (_,__) => builder(this.animationToWidget(controller.value)),
+  Widget buildAnimated(Widget Function(double)? builder) => AnimatedBuilder(
+    animation: controller!, 
+    builder: (_,__) => builder!(this.animationToWidget(controller!.value)),
   );
 
   bool get withTitle => widget.title != null || widget.titleBuilder != null;
   bool get withLeading => widget.leading != null || widget.leadingBuilder != null;
   bool get withTrailing => widget.trailing != null || widget.trailingBuilder != null;
 
-  bool get disabled => !(widget.enabled ?? true);
+  bool get disabled => !widget.enabled;
 
-  double get dividedControllerValue => (controller.value*widget.divisions).round()/widget.divisions;
+  double get dividedControllerValue => (controller!.value*widget.divisions!).round()/widget.divisions!;
 
   @override
   Widget build(BuildContext context) {
@@ -250,9 +243,9 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(widget.radius),
                   child: AnimatedBuilder(
-                    animation: controller, 
+                    animation: controller!, 
                     builder: (_,__) {
-                      final double val = controller.value;
+                      final double val = controller!.value;
                       return Align(
                         alignment: aligment,
                         widthFactor: horizontal ? val.mapToRange(widget.crossAxisSize / delta, 1.0) : null,
@@ -281,8 +274,8 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
         icon: Icon(Icons.restore),
         onPressed: (){
           _prevTapTarget = null;
-          controller.animateTo(
-            widgetToAnimation(widget.defaultValue), 
+          controller!.animateTo(
+            widgetToAnimation(widget.defaultValue!), 
             duration: const Duration(milliseconds: 250), 
             curve: Curves.ease,
           ).then((_){
@@ -308,28 +301,28 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
 
   void dragUpdate(DragUpdateDetails details, double max){
     _prevTapTarget = null;
-    controller.value += details.primaryDelta / max;
-    widget.onChanged?.call(animationToWidget(controller.value));
+    controller!.value += details.primaryDelta! / max;
+    widget.onChanged?.call(animationToWidget(controller!.value));
   }
 
   void dragEnd() async {
     if(!mounted) return;
 
     if(widget.divisions != null) {
-      await this.controller.animateTo(
+      await this.controller!.animateTo(
         dividedControllerValue,
         duration: const Duration(milliseconds: 250),
       );
     }
     _prevTapTarget = null;
-    final double widgetVal = animationToWidget(controller.value);
+    final double widgetVal = animationToWidget(controller!.value);
     widget.onChanged?.call(widgetVal);
     widget.onChangeEnd?.call(widgetVal);
   }
 
   void tap(TapUpDetails details, BoxConstraints constraints) async {
-    final double by = 1/widget.divisions;
-    final double prev = _prevTapTarget ?? controller.value;
+    final double by = 1/widget.divisions!;
+    final double prev = _prevTapTarget ?? controller!.value;
 
     
     if(details.localPosition.dx > (horizontal ? constraints.maxWidth : constraints.maxHeight)/2){
@@ -337,8 +330,8 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
     } else {
       _prevTapTarget = (prev - by).clamp(0.0, 1.0);
     }
-    await controller.animateTo(
-      _prevTapTarget,
+    await controller!.animateTo(
+      _prevTapTarget!,
       duration: const Duration(milliseconds: 250), 
     );
     dragEnd();

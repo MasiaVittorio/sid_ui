@@ -2,8 +2,8 @@ part of radio_slider;
 
 
 class RadioSliderThemeData {
-  Color selectedColor;
-  Color backgroundColor;
+  Color? selectedColor;
+  Color? backgroundColor;
   bool hideOpenIcons;
   double height;
   EdgeInsets margin;
@@ -19,22 +19,21 @@ class RadioSliderThemeData {
 
   RadioSliderThemeData mergeWith(RadioSliderThemeData other) 
     => RadioSliderThemeData(
-      elevateSlider: other?.elevateSlider ?? this.elevateSlider 
-        ?? RadioSlider._kElevateSlider,
-      selectedColor: other?.selectedColor ?? this.selectedColor,
-      backgroundColor: other?.backgroundColor ?? this.backgroundColor,      
-      hideOpenIcons: other?.hideOpenIcons ?? this.hideOpenIcons,      
-      height: other?.height ?? this.height ?? RadioSlider._kHeight,      
-      margin: other?.margin ?? this.margin ?? RadioSlider._kMargin,
+      elevateSlider: other.elevateSlider,
+      selectedColor: other.selectedColor ?? this.selectedColor,
+      backgroundColor: other.backgroundColor ?? this.backgroundColor,      
+      hideOpenIcons: other.hideOpenIcons,      
+      height: other.height,      
+      margin: other.margin,
     );
   
 }
 
 class RadioSliderTheme extends StatefulWidget {
   RadioSliderTheme({
-    Key key,
-    @required this.child,
-    @required this.data,
+    Key? key,
+    required this.child,
+    required this.data,
   }): super(key: key);
 
   final Widget child;
@@ -43,15 +42,15 @@ class RadioSliderTheme extends StatefulWidget {
   @override
   _RadioSliderThemeState createState() => _RadioSliderThemeState();
 
-  static RadioSliderThemeData of(BuildContext context){
-    _RadioSliderThemeInherited provider = 
-      context.getElementForInheritedWidgetOfExactType<_RadioSliderThemeInherited>()?.widget;
+  static RadioSliderThemeData? of(BuildContext context){
+    _RadioSliderThemeInherited? provider = 
+      context.getElementForInheritedWidgetOfExactType<_RadioSliderThemeInherited>()?.widget as _RadioSliderThemeInherited?;
     return provider?.data;
   }
 
   static Widget merge({
-    @required RadioSliderThemeData data,
-    @required Widget child,
+    required RadioSliderThemeData data,
+    required Widget child,
   }) => Builder(builder: (context) => RadioSliderTheme(
     data: RadioSliderTheme.of(context)?.mergeWith(data) ?? data,
     child: child,
@@ -72,9 +71,9 @@ class _RadioSliderThemeState extends State<RadioSliderTheme>{
 
 class _RadioSliderThemeInherited extends InheritedWidget {
   _RadioSliderThemeInherited({
-    Key key,
-    @required Widget child,
-    @required this.data,
+    Key? key,
+    required Widget child,
+    required this.data,
   }) : super(key: key, child: child);
 
   final RadioSliderThemeData data;

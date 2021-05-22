@@ -10,8 +10,8 @@ class BorderRoundSliderThumbShape extends SliderComponentShape {
   });
 
 
-  final Color borderColor;
-  final double border;
+  final Color? borderColor;
+  final double? border;
   /// The preferred radius of the round thumb shape when the slider is enabled.
   ///
   /// If it is not provided, then the material default is used.
@@ -23,7 +23,7 @@ class BorderRoundSliderThumbShape extends SliderComponentShape {
   /// thumb radius and has the same ratio of enabled size to disabled size as
   /// the Material spec. The default resolves to 4, which is 2 / 3 of the
   /// default enabled thumb.
-  final double disabledThumbRadius;
+  final double? disabledThumbRadius;
 
   double get _disabledThumbRadius =>  disabledThumbRadius ?? enabledThumbRadius * 2 / 3;
 
@@ -36,16 +36,16 @@ class BorderRoundSliderThumbShape extends SliderComponentShape {
   void paint(
     PaintingContext context,
     Offset center, {
-    Animation<double> activationAnimation,
-    Animation<double> enableAnimation,
-    bool isDiscrete,
-    TextPainter labelPainter,
-    RenderBox parentBox,
-    SliderThemeData sliderTheme,
-    TextDirection textDirection,
-    double value,
-    double textScaleFactor,
-    Size sizeWithOverflow,
+    Animation<double>? activationAnimation,
+    required Animation<double> enableAnimation,
+    bool? isDiscrete,
+    TextPainter? labelPainter,
+    RenderBox? parentBox,
+    required SliderThemeData sliderTheme,
+    TextDirection? textDirection,
+    double? value,
+    double? textScaleFactor,
+    Size? sizeWithOverflow,
   }) {
     final Canvas canvas = context.canvas;
     final Tween<double> radiusTween = Tween<double>(
@@ -59,7 +59,7 @@ class BorderRoundSliderThumbShape extends SliderComponentShape {
     canvas.drawCircle(
       center,
       radiusTween.evaluate(enableAnimation),
-      Paint()..color = colorTween.evaluate(enableAnimation),
+      Paint()..color = colorTween.evaluate(enableAnimation)!,
     );
     canvas.drawCircle(
       center,

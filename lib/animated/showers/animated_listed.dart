@@ -3,32 +3,29 @@ import 'package:sid_utils/sid_utils.dart';
 
 class AnimatedListed extends ImplicitlyAnimatedWidget {
   AnimatedListed({
-    @required this.listed,
-    Axis axis = Axis.vertical,
-    double axisAlignment = -1,
+    required this.listed,
+    this.axis = Axis.vertical,
+    this.axisAlignment = -1,
     this.child,
-    Curve curve,
+    Curve? curve,
     Duration duration = const Duration(milliseconds: 250),
     this.overlapSizeAndOpacity = 0.0,
-  })  : assert(listed != null),
-        axis = axis ?? Axis.vertical,
-        axisAlignment = axisAlignment ?? -1,
-        super(
-          curve: curve ?? Curves.ease, 
-          duration: duration ?? const Duration(milliseconds: 250)
-        );
+  })  : super(
+    curve: curve ?? Curves.ease, 
+    duration: duration,
+  );
 
   final double axisAlignment;
   final Axis axis;
   final bool listed;
-  final Widget child;
+  final Widget? child;
   final double overlapSizeAndOpacity;
   @override
   _DivisionAnimateState createState() => _DivisionAnimateState();
 }
 
 class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedListed> {
-  Tween<double> _tween;
+  Tween<double?>? _tween;
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
@@ -37,13 +34,13 @@ class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedListed> {
       widget.listed ? 1.0 : 0.0,
       (dynamic value) 
         => Tween<double>(begin: value)
-    );
+    ) as Tween<double?>?;
   }
 
   @override
   Widget build(BuildContext context) {
     final double overlap = widget.overlapSizeAndOpacity.clamp(0.0, 1.0);
-    final double val = _tween.evaluate(animation);
+    final double val = _tween!.evaluate(animation)!;
 
     final double maxSizeVal = 1/2 + overlap/2;
 

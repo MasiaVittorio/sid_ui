@@ -18,8 +18,8 @@ class _SidActiveItem implements Comparable<_SidActiveItem> {
     : controller = null,
       removedItemBuilder = null;
 
-  final AnimationController controller;
-  final SidAnimatedListRemovedItemBuilder removedItemBuilder;
+  final AnimationController? controller;
+  final SidAnimatedListRemovedItemBuilder? removedItemBuilder;
   int itemIndex;
 
   @override
@@ -31,14 +31,14 @@ typedef SidAnimatedListRemover = void Function(
   SidAnimatedListRemovedItemBuilder builder,
   { Duration duration }
 );
-typedef SidAnimatedListInserter = void Function(int index, {Duration duration});
+typedef SidAnimatedListInserter = void Function(int index, {Duration? duration});
 
 class SidAnimatedListController{
   SidAnimatedListController();
-  SidAnimatedListRemover _remove;
-  SidAnimatedListInserter _insert;
-  void Function(int) _refresh;
-  VoidCallback _rebuild;
+  SidAnimatedListRemover? _remove;
+  SidAnimatedListInserter? _insert;
+  void Function(int)? _refresh;
+  VoidCallback? _rebuild;
 
   void remove(
     int index, 
@@ -46,7 +46,7 @@ class SidAnimatedListController{
     { Duration duration = _kDuration }
   ){
     if(_remove != null)
-      _remove(index, builder, duration: duration ?? _kDuration);
+      _remove!(index, builder, duration: duration);
     else
       print("this sid animated list controller is not used");
   }
@@ -56,7 +56,7 @@ class SidAnimatedListController{
     { Duration duration = _kDuration }
   ){
     if(_insert != null)
-      _insert(index, duration: duration ?? _kDuration);
+      _insert!(index, duration: duration);
     else
       print("this sid animated list controller is not used");
   }
@@ -64,7 +64,7 @@ class SidAnimatedListController{
   void refresh(int count){
     debugPrint("refreshing list from controller: count: $count");
     if(_refresh != null)
-      _refresh(count);
+      _refresh!(count);
     else
       print("this sid animated list controller is not used");
   }
@@ -72,7 +72,7 @@ class SidAnimatedListController{
   void rebuild(){
     debugPrint("rebuilding list from controller");
     if(_rebuild != null)
-      _rebuild();
+      _rebuild!();
   }
 
   void addListeners(
@@ -91,8 +91,8 @@ class SidAnimatedListController{
 class SidAnimatedList extends StatefulWidget {
 
   const SidAnimatedList({
-    Key key,
-    @required this.itemBuilder,
+    Key? key,
+    required this.itemBuilder,
     this.initialItemCount = 0,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
@@ -102,9 +102,8 @@ class SidAnimatedList extends StatefulWidget {
     this.shrinkWrap = false,
     this.padding,
     this.listController,
-  }) : assert(itemBuilder != null),
-       assert(initialItemCount != null && initialItemCount >= 0),
-       super(key: key);
+  }): assert(initialItemCount >= 0),
+      super(key: key);
 
   final SidAnimatedListItemBuilder itemBuilder;
 
@@ -114,17 +113,17 @@ class SidAnimatedList extends StatefulWidget {
 
   final bool reverse;
 
-  final ScrollController controller;
+  final ScrollController? controller;
 
-  final bool primary;
+  final bool? primary;
 
-  final ScrollPhysics physics;
+  final ScrollPhysics? physics;
 
   final bool shrinkWrap;
 
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
-  final SidAnimatedListController listController;
+  final SidAnimatedListController? listController;
 
   /// The state from the closest instance of this class that encloses the given context.
   ///
@@ -134,10 +133,8 @@ class SidAnimatedList extends StatefulWidget {
   /// ```dart
   /// AnimatedListState animatedList = AnimatedList.of(context);
   /// ```
-  static SidAnimatedListState of(BuildContext context, { bool nullOk = false }) {
-    assert(context != null);
-    assert(nullOk != null);
-    final SidAnimatedListState result = context.findAncestorStateOfType<SidAnimatedListState>();
+  static SidAnimatedListState? of(BuildContext context, { bool nullOk = false }) {
+    final SidAnimatedListState? result = context.findAncestorStateOfType<SidAnimatedListState>();
     if (nullOk || result != null)
       return result;
     throw FlutterError(
@@ -201,18 +198,18 @@ class SidAnimatedListState extends State<SidAnimatedList> with TickerProviderSta
   @override
   void dispose() {
     for (_SidActiveItem item in _incomingItems)
-      item.controller.dispose();
+      item.controller!.dispose();
     for (_SidActiveItem item in _outgoingItems)
-      item.controller.dispose();
+      item.controller!.dispose();
     super.dispose();
   }
 
-  _SidActiveItem _removeActiveItemAt(List<_SidActiveItem> items, int itemIndex) {
+  _SidActiveItem? _removeActiveItemAt(List<_SidActiveItem> items, int itemIndex) {
     final int i = binarySearch(items, _SidActiveItem.index(itemIndex));
     return i == -1 ? null : items.removeAt(i);
   }
 
-  _SidActiveItem _activeItemAt(List<_SidActiveItem> items, int itemIndex) {
+  _SidActiveItem? _activeItemAt(List<_SidActiveItem> items, int itemIndex) {
     final int i = binarySearch(items, _SidActiveItem.index(itemIndex));
     return i == -1 ? null : items[i];
   }
@@ -252,8 +249,8 @@ class SidAnimatedListState extends State<SidAnimatedList> with TickerProviderSta
   /// This method's semantics are the same as Dart's [List.insert] method:
   /// it increases the length of the list by one and shifts all items at or
   /// after [index] towards the end of the list.
-  void insertItem(int index, { Duration duration = _kDuration }) {
-    assert(index != null && index >= 0);
+  void insertItem(int index, { Duration? duration = _kDuration }) {
+    assert(index >= 0);
     assert(duration != null);
     if(!mounted) return;
 
@@ -281,7 +278,7 @@ class SidAnimatedListState extends State<SidAnimatedList> with TickerProviderSta
     });
 
     controller.forward().then<void>((_) {
-      _removeActiveItemAt(_incomingItems, incomingItem.itemIndex).controller.dispose();
+      _removeActiveItemAt(_incomingItems, incomingItem.itemIndex)!.controller!.dispose();
     });
   }
 
@@ -303,14 +300,13 @@ class SidAnimatedListState extends State<SidAnimatedList> with TickerProviderSta
   ) {
 
     if(!mounted) return;
-    assert(index != null && index >= 0);
-    assert(duration != null);
+    assert(index >= 0);
 
     final int itemIndex = _indexToItemIndex(index);
     assert(itemIndex >= 0 && itemIndex < _itemsCount);
     assert(_activeItemAt(_outgoingItems, itemIndex) == null);
 
-    final _SidActiveItem incomingItem = _removeActiveItemAt(_incomingItems, itemIndex);
+    final _SidActiveItem? incomingItem = _removeActiveItemAt(_incomingItems, itemIndex);
     final AnimationController controller = incomingItem?.controller
       ?? AnimationController(duration: duration, value: 1.0, vsync: this);
 
@@ -323,7 +319,7 @@ class SidAnimatedListState extends State<SidAnimatedList> with TickerProviderSta
     });
 
     controller.reverse().then<void>((void value) {
-      _removeActiveItemAt(_outgoingItems, outgoingItem.itemIndex).controller.dispose();
+      _removeActiveItemAt(_outgoingItems, outgoingItem.itemIndex)!.controller!.dispose();
 
       // Decrement the incoming and outgoing item indices to account
       // for the removal.
@@ -345,9 +341,9 @@ class SidAnimatedListState extends State<SidAnimatedList> with TickerProviderSta
   void refresh(int itemsCount){
     if(!mounted) return;
     for (_SidActiveItem item in _incomingItems)
-      item.controller.dispose();
+      item.controller!.dispose();
     for (_SidActiveItem item in _outgoingItems)
-      item.controller.dispose();
+      item.controller!.dispose();
 
     _incomingItems.clear();
     _outgoingItems.clear();
@@ -357,11 +353,11 @@ class SidAnimatedListState extends State<SidAnimatedList> with TickerProviderSta
   }
 
   Widget _itemBuilder(BuildContext context, int itemIndex) {
-    final _SidActiveItem outgoingItem = _activeItemAt(_outgoingItems, itemIndex);
+    final _SidActiveItem? outgoingItem = _activeItemAt(_outgoingItems, itemIndex);
     if (outgoingItem != null)
-      return outgoingItem.removedItemBuilder(context, outgoingItem.controller.view);
+      return outgoingItem.removedItemBuilder!(context, outgoingItem.controller!.view);
 
-    final _SidActiveItem incomingItem = _activeItemAt(_incomingItems, itemIndex);
+    final _SidActiveItem? incomingItem = _activeItemAt(_incomingItems, itemIndex);
     final Animation<double> animation = incomingItem?.controller?.view ?? kAlwaysCompleteAnimation;
     return widget.itemBuilder(context, _itemIndexToIndex(itemIndex), animation);
   }

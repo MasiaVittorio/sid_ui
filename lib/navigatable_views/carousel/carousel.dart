@@ -10,12 +10,12 @@ import 'package:sid_ui/decorations/up_shadower.dart';
 export 'item_builder.dart';
 
 typedef PositionedItemBuilder = Widget Function({
-  @required BuildContext context, 
-  @required int itemIndex, 
-  @required double pageValue,
-  @required double totalHeight,
-  @required double width,
-  @required CarouselController controller,
+  required BuildContext context, 
+  required int itemIndex, 
+  required double pageValue,
+  required double totalHeight,
+  required double width,
+  required CarouselController? controller,
 });
 
 const Duration _kCarouselDuration = const Duration(milliseconds: 200);
@@ -24,32 +24,30 @@ const Color _kBarrier = Colors.black12;
 class _Carousel extends StatefulWidget {
 
   const _Carousel({
-    Key key,
-    @required this.routeAnimationController,
+    Key? key,
+    required this.routeAnimationController,
 
-    @required this.itemCount,
-    @required this.initialIndex,
-    @required this.positionedItemBuilder,
+    required this.itemCount,
+    required this.initialIndex,
+    required this.positionedItemBuilder,
 
-    @required this.widthFraction,
+    required this.widthFraction,
 
-    @required this.backgroundColor,
-    @required this.splashAnimateColor,
-    @required this.animateColor,
+    required this.backgroundColor,
+    required this.splashAnimateColor,
+    required this.animateColor,
 
-    @required this.collapsedBuilder,
-    @required this.collapsedSize,
+    required this.collapsedBuilder,
+    required this.collapsedSize,
 
-    @required this.extendedBuilder,
-    @required this.extendedSize,
+    required this.extendedBuilder,
+    required this.extendedSize,
 
-    @required this.parallaxEffect,
-  }): assert(positionedItemBuilder != null),
-      assert(widthFraction != null),
-      assert(widthFraction > 1/3 && widthFraction <= 1),
+    required this.parallaxEffect,
+  }): assert(widthFraction > 1/3 && widthFraction <= 1),
       super(key: key);
   
-  final AnimationController routeAnimationController;
+  final AnimationController? routeAnimationController;
 
   final PositionedItemBuilder positionedItemBuilder;
   final int itemCount;
@@ -57,10 +55,10 @@ class _Carousel extends StatefulWidget {
 
   final double widthFraction;
 
-  final Widget Function(int, CarouselController) collapsedBuilder;
-  final double collapsedSize;
-  final Widget Function(int, CarouselController) extendedBuilder;
-  final double extendedSize;
+  final Widget Function(int, CarouselController)? collapsedBuilder;
+  final double? collapsedSize;
+  final Widget Function(int, CarouselController)? extendedBuilder;
+  final double? extendedSize;
   final double parallaxEffect;
 
   final Color Function(int) backgroundColor;
@@ -75,13 +73,13 @@ class _Carousel extends StatefulWidget {
 class CarouselController {
   CarouselController();
 
-  void Function(int) _jumpTo;
-  void Function(int) _animateTo;
-  VoidCallback _open;
-  VoidCallback _close;
-  int Function() _n;
-  double Function() _horizontalValue;
-  double Function() _verticalValue;
+  void Function(int)? _jumpTo;
+  void Function(int)? _animateTo;
+  VoidCallback? _open;
+  VoidCallback? _close;
+  int Function()? _n;
+  double Function()? _horizontalValue;
+  double Function()? _verticalValue;
 
   addListeners(
     void Function(int) __jumpTo,
@@ -102,35 +100,35 @@ class CarouselController {
   }
 
   void jumpTo(int index){
-    if(_jumpTo != null) _jumpTo(index);
+    if(_jumpTo != null) _jumpTo!(index);
   }
   void animateTo(int index){
-    if(_animateTo != null) _animateTo(index);
+    if(_animateTo != null) _animateTo!(index);
   }
   void open(){
-    if(_open != null) _open();
+    if(_open != null) _open!();
   }
   void close(){
-    if(_close != null) _close();
+    if(_close != null) _close!();
   }
 
-  double horizontalValue(){
+  double? horizontalValue(){
     if(_horizontalValue != null)
-      return _horizontalValue();
+      return _horizontalValue!();
     return null;
   }
-  double verticalValue(){
+  double? verticalValue(){
     if(_verticalValue != null)
-      return _verticalValue();
+      return _verticalValue!();
     return null;
   }
-  int n(){
-    if(_n != null) return _n();
+  int? n(){
+    if(_n != null) return _n!();
     return null;
   }
 
-  int currentIndex(){
-    double v = horizontalValue();
+  int? currentIndex(){
+    double? v = horizontalValue();
     if(v == null)
       return null;
     return v.round();
@@ -140,15 +138,15 @@ class CarouselController {
     if(_animateTo == null)
       return;
 
-    final int items = n();
+    final int? items = n();
     if(items == null)
       return;
 
-    final int current = currentIndex(); 
+    final int? current = currentIndex(); 
     if(current == null)
       return;
     
-    _animateTo((current + step).clamp(0, items - 1));
+    _animateTo!((current + step).clamp(0, items - 1));
   }
 
   void nextItem() => stepBy(1);
@@ -158,10 +156,10 @@ class CarouselController {
 
 class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
 
-  AnimationController _horizontalController;
-  AnimationController _verticalController;
-  Color _color;
-  CarouselController _carouselController;
+  AnimationController? _horizontalController;
+  late AnimationController _verticalController;
+  Color? _color;
+  late CarouselController _carouselController;
 
   @override
   void initState() {
@@ -173,7 +171,7 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
       _animateTo,
       _open,
       _close,
-      () => _horizontalController.value,
+      () => _horizontalController!.value,
       () => _verticalController.value,
       () => widget.itemCount,
     );
@@ -182,7 +180,7 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
 
   @override
   void didUpdateWidget(_Carousel oldWidget) {
-    if(widget.itemCount.toDouble() != this._horizontalController.upperBound + 1)
+    if(widget.itemCount.toDouble() != this._horizontalController!.upperBound + 1)
       _resetController();
     super.didUpdateWidget(oldWidget);
   }
@@ -192,7 +190,7 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
     _horizontalController = AnimationController(
       upperBound: widget.itemCount - 1.0,
       lowerBound: 0.0,
-      value: widget.initialIndex?.toDouble() ?? 0.0,
+      value: widget.initialIndex.toDouble(),
       vsync: this,
     )..addListener(() => this.setState((){}));
     
@@ -210,24 +208,20 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
   //============================
 
   int get n => widget.itemCount;
-  double get currentHorizontalValue => _horizontalController.value;
+  double get currentHorizontalValue => _horizontalController!.value;
   int get currentIndex => (currentHorizontalValue).round();
   int get nextIndex => (currentHorizontalValue).ceil();
   int get prevIndex => (currentHorizontalValue).floor();
   Color get backgroundColor => _backgroundColor(currentIndex);
-  Color _backgroundColor(int i) {
-    if(widget.backgroundColor != null) 
-      return widget.backgroundColor(i);
-    return Colors.black54;
-  }
+  Color _backgroundColor(int i) => widget.backgroundColor(i);
 
   double get currentVerticalValue => _verticalController.value;
 
+  bool get isCollapsedThere => widget.collapsedBuilder != null;
+  bool get isExtendedThere => widget.extendedBuilder != null;
+
   double get collapsedSize => widget.collapsedSize ?? 0.0;
   double get extendedSize => widget.extendedSize ?? 0.0;
-
-  bool get isCollapsedThere => collapsedSize != null && widget.collapsedBuilder != null;
-  bool get isExtendedThere => extendedSize != null && widget.extendedBuilder != null;
 
   bool get isVerticalScrollable => isCollapsedThere;
 
@@ -246,7 +240,7 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
     final media = MediaQuery.of(context);
     final width = media.size.width;
     final height = media.size.height;
-    final wFrac = widget.widthFraction.clamp(1/3, 1.0);
+    final num wFrac = widget.widthFraction.clamp(1/3, 1.0);
     final fWidth = width * wFrac;
 
     final bottomSize = isCollapsedThere ? collapsedSize : 0.0;
@@ -267,10 +261,10 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
 
   Widget background() => Positioned.fill(
     child: AnimatedBuilder(
-      animation: widget.routeAnimationController,
+      animation: widget.routeAnimationController!,
       child: SplashingColoredBackground(_color, duration: const Duration(milliseconds: 550),),
       builder: (context, child) => Opacity(
-        opacity: widget.routeAnimationController.value,
+        opacity: widget.routeAnimationController!.value,
         child: child,
       ),
     ),
@@ -285,16 +279,16 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
 
   Widget pageView(double fWidth, double width, double height) 
     => AnimatedBuilder(
-      animation: widget.routeAnimationController,
+      animation: widget.routeAnimationController!,
       child: pageViewChild(fWidth, width, height),
       builder: (context, child) => Positioned(
         left: 0.0,
         right: 0.0,
         top: height * (1 - Curves.fastOutSlowIn.transform(
-          widget.routeAnimationController.value
+          widget.routeAnimationController!.value
         )),
         height: height,
-        child: child,
+        child: child!,
       ),
     );
 
@@ -316,7 +310,7 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
           delegate: _CarouselLayoutDelegate(
             indexes: indexes,
             value: currentHorizontalValue,
-            parallax: - currentVerticalValue * verticalDelta * (widget.parallaxEffect ?? 0.3),
+            parallax: - currentVerticalValue * verticalDelta * widget.parallaxEffect,
           ),
           children: [
             for(final i in indexes)
@@ -380,7 +374,7 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
                   right: 0.0,
                   left: 0.0,
                   height: extendedSize,
-                  child: widget.extendedBuilder(currentIndex, _carouselController),
+                  child: widget.extendedBuilder!(currentIndex, _carouselController),
                 ),
               Positioned(
                 top: 0.0,
@@ -391,7 +385,7 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
                   opacity: 1 - currentVerticalValue,
                   child: IgnorePointer(
                     ignoring: currentVerticalValue != 0.0,
-                    child: widget.collapsedBuilder(currentIndex, _carouselController),
+                    child: widget.collapsedBuilder!(currentIndex, _carouselController),
                   ),
                 ),
               ),
@@ -408,7 +402,7 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
       child: GestureDetector(
         onTap: _close,
         child: Container(
-          color: _color.withOpacity(
+          color: _color!.withOpacity(
             0.4 * currentVerticalValue
           ),
         ),
@@ -422,7 +416,7 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
   //============================
 
   void onHorizontalDragUpdate(DragUpdateDetails details, double width){
-    _horizontalController.value -= details.primaryDelta / width;
+    _horizontalController!.value -= details.primaryDelta! / width;
   }
   void onHorizontalDragEnd(DragEndDetails details){
     final double vel = details.velocity.pixelsPerSecond.dx;
@@ -440,9 +434,9 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
   void _animateTo(int i){
 
     _color = _backgroundColor(i);
-    if(_horizontalController.isAnimating)
+    if(_horizontalController!.isAnimating)
       return;
-    _horizontalController.animateTo(
+    _horizontalController!.animateTo(
       i.toDouble(), 
       duration:_flingDuration,
       curve: Curves.easeOut,
@@ -453,7 +447,7 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
 
   void _jumpTo(int i){
     _color = _backgroundColor(i);
-    _horizontalController.value = i.toDouble();
+    _horizontalController!.value = i.toDouble();
   }
 
 
@@ -465,7 +459,7 @@ class _CarouselState extends State<_Carousel> with TickerProviderStateMixin {
   //============================
 
   void onVerticalDragUpdate(DragUpdateDetails details){
-    _verticalController.value -= details.primaryDelta / verticalDelta;
+    _verticalController.value -= details.primaryDelta! / verticalDelta;
   }
   void onVerticalDragEnd(DragEndDetails details){
     final double vel = details.velocity.pixelsPerSecond.dy;
@@ -508,9 +502,9 @@ class _CarouselLayoutDelegate extends MultiChildLayoutDelegate {
   final double parallax;
  
   _CarouselLayoutDelegate({
-    @required this.indexes,
-    @required this.value,
-    @required this.parallax,
+    required this.indexes,
+    required this.value,
+    required this.parallax,
   });
 
   @override
@@ -564,25 +558,25 @@ class _CarouselLayoutDelegate extends MultiChildLayoutDelegate {
 
 class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
   _ModalBottomSheetRoute({
-    @required this.theme,
-    @required this.barrierLabel,
+    required this.theme,
+    required this.barrierLabel,
 
-    @required this.itemCount,
-    @required this.initialIndex,
-    @required this.positionedItemBuilder,
-    @required this.widthFraction,
+    required this.itemCount,
+    required this.initialIndex,
+    required this.positionedItemBuilder,
+    required this.widthFraction,
 
-    @required this.collapsedBuilder,
-    @required this.collapsedSize,
-    @required this.extendedBuilder,
-    @required this.extendedSize,
-    @required this.parallaxEffect,
+    required this.collapsedBuilder,
+    required this.collapsedSize,
+    required this.extendedBuilder,
+    required this.extendedSize,
+    required this.parallaxEffect,
 
-    @required this.backgroundColor,
-    @required this.animateColor,
-    @required this.splashAnimateColor,
+    required this.backgroundColor,
+    required this.animateColor,
+    required this.splashAnimateColor,
 
-    RouteSettings settings,
+    RouteSettings? settings,
   }) : super(settings: settings);
 
   final ThemeData theme;
@@ -593,13 +587,13 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
 
   final double widthFraction;
 
-  final Widget Function(int, CarouselController) collapsedBuilder;
-  final double collapsedSize;
-  final Widget Function(int, CarouselController) extendedBuilder;
-  final double extendedSize;
+  final Widget Function(int, CarouselController)? collapsedBuilder;
+  final double? collapsedSize;
+  final Widget Function(int, CarouselController)? extendedBuilder;
+  final double? extendedSize;
   final double parallaxEffect;
 
-  final Color Function(int) backgroundColor;
+  final Color Function(int)? backgroundColor;
   final bool animateColor;
   final bool splashAnimateColor;
 
@@ -616,17 +610,17 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
   @override
   Color get barrierColor => _kBarrier;
 
-  AnimationController _animationController;
+  AnimationController? _animationController;
 
   @override
   AnimationController createAnimationController() {
     assert(_animationController == null);
     _animationController = AnimationController(
-      vsync: navigator.overlay,
+      vsync: navigator!.overlay!,
       debugLabel: 'carousel',
       duration: _kCarouselDuration,
     ); 
-    return _animationController; 
+    return _animationController!; 
   }
 
   @override
@@ -638,7 +632,7 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
       itemCount: itemCount,
       positionedItemBuilder: positionedItemBuilder,
 
-      widthFraction: widthFraction ?? 1.0,
+      widthFraction: widthFraction,
 
       collapsedBuilder: collapsedBuilder,
       collapsedSize: collapsedSize,
@@ -649,27 +643,26 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
       parallaxEffect: parallaxEffect,
 
       backgroundColor: backgroundColor ?? (i) => _kBarrier,
-      animateColor: animateColor ?? true,
-      splashAnimateColor: splashAnimateColor ?? true,
+      animateColor: animateColor,
+      splashAnimateColor: splashAnimateColor,
     );
-    if (theme != null)
-      carousel = Theme(data: theme, child: carousel);
+    carousel = Theme(data: theme, child: carousel);
     return carousel;
   }
 }
 
-Future<T> showCarousel<T>({
-  @required BuildContext context,
-  @required int itemCount,
-  @required PositionedItemBuilder positionedItemBuilder,
+Future<T?> showCarousel<T>({
+  required BuildContext context,
+  required int itemCount,
+  required PositionedItemBuilder positionedItemBuilder,
 
   int initialIndex = 0,
-  Color Function(int) backgroundColor,
+  Color Function(int)? backgroundColor,
 
-  Widget Function(int, CarouselController) collapsedBuilder,
-  double collapsedSize,
-  Widget Function(int, CarouselController) extendedBuilder,
-  double extendedSize,
+  Widget Function(int, CarouselController)? collapsedBuilder,
+  double? collapsedSize,
+  Widget Function(int, CarouselController)? extendedBuilder,
+  double? extendedSize,
   double parallaxEffect = 0.3,
 
   double widthFraction = 1.0,
@@ -678,7 +671,6 @@ Future<T> showCarousel<T>({
 
   bool forcePortrait = true,
 }) {
-  assert(context != null);
 
   if(forcePortrait == true)
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -692,14 +684,14 @@ Future<T> showCarousel<T>({
     collapsedSize: collapsedSize,
     extendedBuilder: extendedBuilder,
     extendedSize: extendedSize,
-    parallaxEffect: parallaxEffect ?? 0.3,
-    widthFraction: widthFraction ?? 1.0,
+    parallaxEffect: parallaxEffect,
+    widthFraction: widthFraction,
     itemCount: itemCount,
-    initialIndex: initialIndex ?? 0,
-    animateColor: animateColor ?? true,
-    splashAnimateColor: splashAnimateColor ?? true,
+    initialIndex: initialIndex,
+    animateColor: animateColor,
+    splashAnimateColor: splashAnimateColor,
   )).then<void>((_) => SystemChrome.setPreferredOrientations(
     DeviceOrientation.values.toList()
-  ));
+  )) as Future<T?>;
   
 }

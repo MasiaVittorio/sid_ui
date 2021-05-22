@@ -6,10 +6,10 @@ class AnimatedCount extends ImplicitlyAnimatedWidget {
   final TextStyle style;
 
   AnimatedCount({
-    Key key,
-    @required this.count,
-    @required this.style,
-    @required Duration duration,
+    Key? key,
+    required this.count,
+    required this.style,
+    required Duration duration,
     Curve curve = Curves.easeIn
   }) : super(duration: duration, curve: curve, key: key);
 
@@ -18,19 +18,23 @@ class AnimatedCount extends ImplicitlyAnimatedWidget {
 }
 
 class _AnimatedCountState extends AnimatedWidgetBaseState<AnimatedCount> {
-  IntTween _count;
+  IntTween? _count;
 
   @override  
   Widget build(BuildContext context) {
     return new Text(
-      _count.evaluate(animation).toString(),
+      _count!.evaluate(animation).toString(),
       style: widget.style
     );
   }
 
   @override
-  void forEachTween(TweenVisitor visitor) {
-    _count = visitor(_count, widget.count, (dynamic value) => new IntTween(begin: value));
+  void forEachTween(visitor) {
+    _count = visitor(
+      _count, 
+      widget.count, 
+      (dynamic value) => IntTween(begin: value),
+    ) as IntTween?;
   }
 }
 

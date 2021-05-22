@@ -3,26 +3,26 @@ part of radio_slider;
 class _ButtonWithIcon extends StatelessWidget {
 
   _ButtonWithIcon({
-    @required this.selectedColor,
-    @required this.item,
-    @required this.isShowing,
-    @required this.duration,
-    @required this.height,
-    @required this.width,
+    required this.selectedColor,
+    required this.item,
+    required this.isShowing,
+    required this.duration,
+    required this.height,
+    required this.width,
   });
 
   final double height;
   final double width;
 
   final Duration duration;
-  final Color selectedColor;
+  final Color? selectedColor;
   final bool isShowing;
   final RadioSliderItem item;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final RadioSliderThemeData radioTheme = RadioSliderTheme.of(context);
+    final RadioSliderThemeData? radioTheme = RadioSliderTheme.of(context);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -47,7 +47,7 @@ class _ButtonWithIcon extends StatelessWidget {
             ), 
             secondChild: IconTheme.merge(
               data: IconThemeData(
-                color: theme?.unselectedWidgetColor,
+                color: theme.unselectedWidgetColor,
               ),
               child: item.icon
             ),
@@ -66,10 +66,10 @@ class _ButtonWithIcon extends StatelessWidget {
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(left: 4.0),
             child: DefaultTextStyle.merge(
-              style: theme.textTheme.button.copyWith(
+              style: theme.textTheme.button?.copyWith(
                 color: this.selectedColor 
                   ?? radioTheme?.selectedColor
-                    ?? theme?.textTheme?.bodyText2?.color,
+                    ?? theme.textTheme.bodyText2?.color,
               ),
               child: item.title
             ),

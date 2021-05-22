@@ -4,9 +4,9 @@ part of radio_slider;
 class _VisualSlider extends StatelessWidget {
 
   _VisualSlider({
-    @required this.height,
-    @required this.width,
-    @required this.elevate,
+    required this.height,
+    required this.width,
+    required this.elevate,
   });
 
   final double height;

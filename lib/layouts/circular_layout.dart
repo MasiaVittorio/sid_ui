@@ -4,7 +4,7 @@ import 'dart:math' as math;
 
 class CircularLayout extends StatelessWidget {
   final List<Widget> children;
-  final List<Widget> labels;
+  final List<Widget>? labels;
   final double startingAngle;
   final bool clockWise;
   final double labelPadding;
@@ -14,19 +14,16 @@ class CircularLayout extends StatelessWidget {
     this.labels,
     this.clockWise = true,
     this.labelPadding = 8.0,
-  }): assert(children != null),
-      assert(clockWise != null),
-      assert(labelPadding != null),
-      assert(children.isNotEmpty),
+  }): assert(children.isNotEmpty),
       assert((labels == null) || (labels.length == children.length));
 
   @override
   Widget build(BuildContext context) {
-    final bool alsoLabels = labels != null && labels.isNotEmpty;
+    final bool alsoLabels = labels != null && labels!.isNotEmpty;
     return CustomMultiChildLayout(
       delegate: _CircularLayoutDelegate(
         itemCount: children.length,
-        startAngle: this.startingAngle ?? -90,
+        startAngle: this.startingAngle,
         alsoLabels: alsoLabels,
         clockWise: this.clockWise,
         labelPadding: this.labelPadding,
@@ -38,10 +35,10 @@ class CircularLayout extends StatelessWidget {
             child: children[i],
           ),
         if(alsoLabels)
-          for(int i = 0; i < labels.length; ++i)
+          for(int i = 0; i < labels!.length; ++i)
             LayoutId(
               id: '$_kLayoutIdLabel$i',
-              child: labels[i],
+              child: labels![i],
             ),
       ],
     );
@@ -59,17 +56,13 @@ class _CircularLayoutDelegate extends MultiChildLayoutDelegate {
   final bool clockWise;
  
   _CircularLayoutDelegate({
-    @required this.itemCount,
+    required this.itemCount,
     this.startAngle = -90,
     this.alsoLabels = false,
     this.labelPadding = 8.0,
-    this.clockWise,
-  }): assert(alsoLabels != null),
-      assert(clockWise != null),
-      assert((!alsoLabels) || (labelPadding!=null)), 
-      assert(startAngle != null),
-      assert(itemCount != null);
-
+    required this.clockWise,
+  }); 
+      
   // @override
   // Size getSize(BoxConstraints constraints) {
   //   final l = math.min(constraints.maxHeight, constraints.maxWidth);

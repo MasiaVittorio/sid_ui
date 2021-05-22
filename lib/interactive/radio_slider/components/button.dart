@@ -4,13 +4,13 @@ part of radio_slider;
 class _Button extends StatelessWidget {
 
   _Button({
-    @required this.withIcon,
-    @required this.selectedColor,
-    @required this.item,
-    @required this.isShowing,
-    @required this.duration,
-    @required this.height,
-    @required this.width,
+    required this.withIcon,
+    required this.selectedColor,
+    required this.item,
+    required this.isShowing,
+    required this.duration,
+    required this.height,
+    required this.width,
   });
 
   final bool withIcon;
@@ -19,7 +19,7 @@ class _Button extends StatelessWidget {
   final double width;
 
   final Duration duration;
-  final Color selectedColor;
+  final Color? selectedColor;
   final bool isShowing;
   final RadioSliderItem item;
 

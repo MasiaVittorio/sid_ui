@@ -13,14 +13,14 @@ class AnimatedClipper extends StatefulWidget {
   final bool alsoFade;
 
   AnimatedClipper({
-    Key key,
-    @required this.clip,
-    @required this.child,
+    Key? key,
+    required this.clip,
+    required this.child,
     this.alsoFade = false,
     this.axis = Axis.horizontal,
     this.childAlignment = Alignment.center,
     this.axisAlignment = 0.0,
-    @required this.duration,
+    required this.duration,
     this.curve = Curves.easeIn
   });
 
@@ -30,12 +30,14 @@ class AnimatedClipper extends StatefulWidget {
 
 
 class _AnimatedClipperState extends State<AnimatedClipper> with TickerProviderStateMixin {
-  AnimationController _controller;
-  bool _bool;
+
+  late AnimationController _controller;
+  bool? _bool;
+
   @override
   void initState(){
     _controller = AnimationController(
-      duration: widget.duration ?? Duration(milliseconds: 200),
+      duration: widget.duration,
       vsync: this
     );
     _bool = widget.clip;
@@ -44,7 +46,7 @@ class _AnimatedClipperState extends State<AnimatedClipper> with TickerProviderSt
   }
 
   void go(){
-    if(_bool)
+    if(_bool!)
       _controller.animateTo(0.0, curve: widget.curve);
     else
       _controller.animateTo(1.0, curve: widget.curve);
@@ -63,15 +65,11 @@ class _AnimatedClipperState extends State<AnimatedClipper> with TickerProviderSt
       this.go();      
     }
 
-    if(
-      (_controller == null)
-      ||
-      (_controller.duration != widget.duration)
-    ){
+    if(_controller.duration != widget.duration){
       final _valReset = _controller.value;
-      _controller?.dispose();
+      _controller.dispose();
       _controller = AnimationController(
-        duration: widget.duration ?? Duration(milliseconds: 200),
+        duration: widget.duration,
         vsync: this,
         value: _valReset,
       );
@@ -103,29 +101,26 @@ class _AnimatedClipperState extends State<AnimatedClipper> with TickerProviderSt
 class FadeAndSizeTransition extends AnimatedWidget {
 
   const FadeAndSizeTransition({
-    Key key,
+    Key? key,
     this.axis = Axis.vertical,
-    @required Animation<double> sizeFactor,
+    required Animation<double> sizeFactor,
     this.axisAlignment = 0.0,
     this.child,
     this.alsoFade = true,
-  }) : assert(axis != null),
-       assert(sizeFactor != null),
-       assert(axisAlignment != null),
-       super(key: key, listenable: sizeFactor);
+  }) : super(key: key, listenable: sizeFactor);
 
   final Axis axis;
 
   final bool alsoFade;
 
-  Animation<double> get sizeFactor => listenable;
+  Animation<double> get sizeFactor => listenable as Animation<double>;
 
   final double axisAlignment;
 
   /// The widget below this widget in the tree.
   ///
   /// {@macro flutter.widgets.child}
-  final Widget child;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ import 'dart:math';
 class RadioIcon extends ImplicitlyAnimatedWidget {
   final bool value;
   final Color activeColor;
-  final Color inactiveColor;
+  final Color? inactiveColor;
   final IconData inactiveIcon;
   final IconData activeIcon;
   final Duration duration;
@@ -13,13 +13,13 @@ class RadioIcon extends ImplicitlyAnimatedWidget {
   final EdgeInsets padding;
 
   RadioIcon({
-    Key key,
-    @required this.value,
-    @required this.activeColor,
+    Key? key,
+    required this.value,
+    required this.activeColor,
     this.inactiveColor,
     this.size = 24.0,
-    @required this.activeIcon,
-    @required this.inactiveIcon,
+    required this.activeIcon,
+    required this.inactiveIcon,
     this.padding = const EdgeInsets.all(12),
     this.duration = const Duration(milliseconds: 200),
     Curve curve = Curves.easeIn
@@ -30,11 +30,11 @@ class RadioIcon extends ImplicitlyAnimatedWidget {
 }
 
 class _RadioIconState extends AnimatedWidgetBaseState<RadioIcon> {
-  Tween<double> _count;
+  Tween<double?>? _count;
   
   @override  
   Widget build(BuildContext context) {
-    double ev = _count.evaluate(animation);
+    double ev = _count!.evaluate(animation)!;
     return IconTheme.merge(
       data: IconThemeData(opacity: 1.0),
       child: Padding(
@@ -68,20 +68,24 @@ class _RadioIconState extends AnimatedWidgetBaseState<RadioIcon> {
   }
 
   @override
-  void forEachTween(TweenVisitor visitor) {
-    _count = visitor(_count, widget.value ? 1.0 : 0.0, (dynamic value) => new Tween<double>(begin: value));
+  void forEachTween(visitor) {
+    _count = visitor(
+      _count, 
+      widget.value ? 1.0 : 0.0, 
+      (value) => Tween<double>(begin: value)
+    ) as Tween<double?>?;
   }
 }
 
 class _CircleClipper extends CustomClipper<Rect> {
   _CircleClipper({this.center, this.radius});
 
-  final Offset center;
-  final double radius;
+  final Offset? center;
+  final double? radius;
 
   @override
   Rect getClip(Size size) {
-    var rect = Rect.fromCircle(radius: radius, center: center);
+    var rect = Rect.fromCircle(radius: radius!, center: center!);
 
     return rect;
   }

@@ -5,17 +5,17 @@ import 'package:flutter/services.dart';
 
 class InsertDialog extends StatefulWidget {
   InsertDialog({
-    @required this.onConfirm,
-    @required this.hintText,
-    @required this.labelText,
-    @required this.inputType,
-    @required this.checker,
-    @required this.maxLenght,
+    required this.onConfirm,
+    required this.hintText,
+    required this.labelText,
+    required this.inputType,
+    required this.checker,
+    required this.maxLenght,
     this.title = "",
     this.pasteChecker,
   });
 
-  final String Function(String) pasteChecker;
+  final String? Function(String)? pasteChecker;
 
   final String title;
 
@@ -35,11 +35,11 @@ class InsertDialog extends StatefulWidget {
 
 class _InsertDialogState extends State<InsertDialog> {
 
-  TextEditingController _controller;
+  TextEditingController? _controller;
 
-  String _clipboardString;
+  String? _clipboardString;
 
-  bool _pastable;
+  bool? _pastable;
 
   @override
   void initState() {
@@ -58,20 +58,20 @@ class _InsertDialogState extends State<InsertDialog> {
   Future<void> _getClipboardAndCheck() async {
     final cbd = await Clipboard.getData("text/plain");
     setState(() {
-      this._clipboardString = this._pasteChecker(cbd.text);
+      this._clipboardString = this._pasteChecker(cbd!.text);
     });
     return;
   }
 
-  String _pasteChecker(String input){
+  String? _pasteChecker(String? input){
     if(input == null) return null;
 
-    String output;
+    String? output;
 
     if(this.widget.pasteChecker == null)
       output = input;
     else 
-      output = this.widget.pasteChecker(input);
+      output = this.widget.pasteChecker!(input);
     
     if(output == null) return null;
 
@@ -82,7 +82,7 @@ class _InsertDialogState extends State<InsertDialog> {
 
   @override
   void dispose() {
-    this._controller.dispose();
+    this._controller!.dispose();
     super.dispose();
   }
 
@@ -90,8 +90,10 @@ class _InsertDialogState extends State<InsertDialog> {
   @override
   Widget build(BuildContext context) {
 
-    String _errorString = this.widget.checker(this._controller.text);
+    String _errorString = this.widget.checker(this._controller!.text);
     bool _error = _errorString != '';
+
+    final Color? themeTextColor = Theme.of(context).textTheme.bodyText2?.color;
 
     final Widget _expanded = TextField(
       keyboardType: widget.inputType,
@@ -100,7 +102,7 @@ class _InsertDialogState extends State<InsertDialog> {
       maxLength: this.widget.maxLenght,
       controller: this._controller,
       textCapitalization: TextCapitalization.characters,
-      style: Theme.of(context).textTheme.bodyText2.copyWith(
+      style: Theme.of(context).textTheme.bodyText2?.copyWith(
         fontSize: 18.0,
         fontWeight: _error ? null : FontWeight.w600,
       ),
@@ -109,9 +111,7 @@ class _InsertDialogState extends State<InsertDialog> {
         prefixText: "#FF ",
         prefixStyle: TextStyle(
           fontSize: 18.0,
-          color: Theme.of(context).textTheme.bodyText2.color != null
-            ? Theme.of(context).textTheme.bodyText2.color.withOpacity(0.5)
-            : null,
+          color: themeTextColor?.withOpacity(0.5),
           fontWeight: FontWeight.w600,
         ),
         errorText: _error ? _errorString : null,
@@ -127,9 +127,7 @@ class _InsertDialogState extends State<InsertDialog> {
         this.widget.title,
         style: TextStyle(
           fontWeight: FontWeight.w700, 
-          color: Theme.of(context).textTheme.bodyText2.color != null
-            ? Theme.of(context).textTheme.bodyText2.color.withOpacity(0.7)
-            : null
+          color: themeTextColor?.withOpacity(0.7)
         ),
       ),
       content: Row(
@@ -139,7 +137,7 @@ class _InsertDialogState extends State<InsertDialog> {
               Icons.close,
             ),
             onPressed: () => setState(() {
-              this._controller.clear();
+              this._controller!.clear();
             }),
           ),
           Expanded(
@@ -148,15 +146,15 @@ class _InsertDialogState extends State<InsertDialog> {
           IconButton(
             icon: Icon(
               Icons.content_paste,
-              color: this._pastable
+              color: this._pastable!
                 ? this._clipboardString != null
                   ? null
                   : IconTheme.of(context).color != null
-                    ? IconTheme.of(context).color.withOpacity(0.5)
+                    ? IconTheme.of(context).color!.withOpacity(0.5)
                     : null
                 : Colors.transparent
             ),
-            onPressed: _pastable && _clipboardString != null
+            onPressed: _pastable! && _clipboardString != null
               ? () async{
                 await this._getClipboardAndCheck();
 
@@ -164,7 +162,7 @@ class _InsertDialogState extends State<InsertDialog> {
                 if(this._clipboardString == null) return;
 
                 setState(() {
-                  this._controller.text = this._clipboardString+'';
+                  this._controller!.text = this._clipboardString!+'';
                 });
               }
               : null
@@ -182,9 +180,9 @@ class _InsertDialogState extends State<InsertDialog> {
           child: Text("Confirm"),
           
           onPressed: _error ? null : () {
-            if(this.widget.checker(this._controller.text) == ''){
+            if(this.widget.checker(this._controller!.text) == ''){
               Navigator.pop(context);
-              this.widget.onConfirm(this._controller.text);
+              this.widget.onConfirm(this._controller!.text);
             }
           },
         ),

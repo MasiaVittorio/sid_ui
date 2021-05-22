@@ -5,10 +5,10 @@ class AnimatedText extends StatefulWidget {
   final String text;
   final Duration duration;
   final Curve curve;
-  final TextStyle style;
-  final TextAlign textAlign;
-  final int maxLines;
-  final TextOverflow overflow;
+  final TextStyle? style;
+  final TextAlign? textAlign;
+  final int? maxLines;
+  final TextOverflow? overflow;
 
   AnimatedText(this.text, {
     this.duration = const Duration(milliseconds: 200),
@@ -17,9 +17,8 @@ class AnimatedText extends StatefulWidget {
     this.curve: Curves.easeIn,
     this.maxLines,
     this.overflow,
-    Key key,
-  }) :  assert(duration != null),
-        super(key: key);
+    Key? key,
+  }): super(key: key);
 
   @override
   State createState() => new AnimatedTextState();
@@ -127,8 +126,8 @@ class AnimatedText extends StatefulWidget {
 
 class AnimatedTextState extends State<AnimatedText> with TickerProviderStateMixin {
 
-  AnimationController _controller;
-  Animation<int> _stepIndex;
+  late AnimationController _controller;
+  late Animation<int> _stepIndex;
   // String _current;
   List<String> _steps = <String>[];
 

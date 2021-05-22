@@ -5,7 +5,7 @@ class ShadeRectangularSliderTrackShape extends SliderTrackShape {
   /// Create a slider track that draws 2 rectangles.
   const ShadeRectangularSliderTrackShape({ this.disabledThumbGapWidth = 2.0, this.gradient});
 
-  final Gradient gradient;
+  final Gradient? gradient;
 
   /// Horizontal spacing, or gap, between the disabled thumb and the track.
   ///
@@ -17,14 +17,14 @@ class ShadeRectangularSliderTrackShape extends SliderTrackShape {
 
   @override
   Rect getPreferredRect({
-    RenderBox parentBox,
+    required RenderBox parentBox,
     Offset offset = Offset.zero,
-    SliderThemeData sliderTheme,
-    bool isEnabled,
-    bool isDiscrete,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = true, /// this should be required, not default true, but the underlying flutter code is a mess idk
+    bool isDiscrete = true, /// this should be required, not default true, but the underlying flutter code is a mess idk
   }) {
-    final double overlayWidth = sliderTheme.overlayShape.getPreferredSize(isEnabled, isDiscrete).width;
-    final double trackHeight = sliderTheme.trackHeight;
+    final double overlayWidth = sliderTheme.overlayShape!.getPreferredSize(isEnabled, isDiscrete).width;
+    final double trackHeight = sliderTheme.trackHeight!;
     assert(overlayWidth >= 0);
     assert(trackHeight >= 0);
     assert(parentBox.size.width >= overlayWidth);
@@ -42,13 +42,13 @@ class ShadeRectangularSliderTrackShape extends SliderTrackShape {
   void paint(
     PaintingContext context,
     Offset offset, {
-    RenderBox parentBox,
-    SliderThemeData sliderTheme,
-    Animation<double> enableAnimation,
-    TextDirection textDirection,
-    Offset thumbCenter,
-    bool isDiscrete,
-    bool isEnabled,
+    RenderBox? parentBox,
+    required SliderThemeData sliderTheme,
+    Animation<double>? enableAnimation,
+    TextDirection? textDirection,
+    Offset? thumbCenter,
+    bool? isDiscrete,
+    bool? isEnabled,
   }) {
     // If the slider track height is 0, then it makes no difference whether the
     // track is painted or not, therefore the painting can be a no-op.
@@ -60,10 +60,10 @@ class ShadeRectangularSliderTrackShape extends SliderTrackShape {
     // but reversed for right to left text.
     final ColorTween activeTrackColorTween = ColorTween(begin: sliderTheme.disabledActiveTrackColor , end: sliderTheme.activeTrackColor);
     final ColorTween inactiveTrackColorTween = ColorTween(begin: sliderTheme.disabledInactiveTrackColor , end: sliderTheme.inactiveTrackColor);
-    final Paint activePaint = Paint()..color = activeTrackColorTween.evaluate(enableAnimation);
-    final Paint inactivePaint = Paint()..color = inactiveTrackColorTween.evaluate(enableAnimation);
-    Paint leftTrackPaint;
-    Paint rightTrackPaint;
+    final Paint activePaint = Paint()..color = activeTrackColorTween.evaluate(enableAnimation!)!;
+    final Paint inactivePaint = Paint()..color = inactiveTrackColorTween.evaluate(enableAnimation)!;
+    late Paint leftTrackPaint;
+    late Paint rightTrackPaint;
     switch (textDirection) {
       case TextDirection.ltr:
         leftTrackPaint = activePaint;
@@ -73,6 +73,10 @@ class ShadeRectangularSliderTrackShape extends SliderTrackShape {
         leftTrackPaint = inactivePaint;
         rightTrackPaint = activePaint;
         break;
+      default: 
+        leftTrackPaint = activePaint;
+        rightTrackPaint = inactivePaint;
+        break;
     }
 
     // Used to create a gap around the thumb iff the slider is disabled.
@@ -81,28 +85,28 @@ class ShadeRectangularSliderTrackShape extends SliderTrackShape {
     // and this gap helps determine how much shorter it should be.
     // c'era un todo di google
     double horizontalAdjustment = 0.0;
-    if (!isEnabled) {
-      final double disabledThumbRadius = sliderTheme.thumbShape.getPreferredSize(false, isDiscrete).width / 2.0;
+    if (!isEnabled!) {
+      final double disabledThumbRadius = sliderTheme.thumbShape!.getPreferredSize(false, isDiscrete!).width / 2.0;
       final double gap = disabledThumbGapWidth * (1.0 - enableAnimation.value);
       horizontalAdjustment = disabledThumbRadius + gap;
     }
 
     final Rect trackRect = getPreferredRect(
-        parentBox: parentBox,
+        parentBox: parentBox!,
         offset: offset,
         sliderTheme: sliderTheme,
         isEnabled: isEnabled,
-        isDiscrete: isDiscrete,
+        isDiscrete: isDiscrete!,
     );
 
     if(this.gradient == null){
-      final Rect leftTrackSegment = Rect.fromLTRB(trackRect.left, trackRect.top, thumbCenter.dx - horizontalAdjustment, trackRect.bottom);
+      final Rect leftTrackSegment = Rect.fromLTRB(trackRect.left, trackRect.top, thumbCenter!.dx - horizontalAdjustment, trackRect.bottom);
       context.canvas.drawRect(leftTrackSegment, leftTrackPaint);
       final Rect rightTrackSegment = Rect.fromLTRB(thumbCenter.dx + horizontalAdjustment, trackRect.top, trackRect.right, trackRect.bottom);
       context.canvas.drawRect(rightTrackSegment, rightTrackPaint);
     }
     else {
-      context.canvas.drawRect(trackRect, Paint()..shader = this.gradient.createShader(trackRect));
+      context.canvas.drawRect(trackRect, Paint()..shader = this.gradient!.createShader(trackRect));
     }
   }
 }

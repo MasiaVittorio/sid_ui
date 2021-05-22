@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class UpShadower extends StatelessWidget{
 
   final Widget child;
-  final Color materyalBodyColor;
+  final Color? materyalBodyColor;
   UpShadower({
-    @required this.child,
+    required this.child,
     this.materyalBodyColor,
   });
 

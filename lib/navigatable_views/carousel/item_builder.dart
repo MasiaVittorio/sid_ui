@@ -5,12 +5,12 @@ import 'package:sid_utils/sid_utils.dart';
 
 PositionedItemBuilder readySidereusPositionedItemBuilder(Widget Function(int) childBuilder) 
   => ({
-  @required BuildContext context, 
-  @required int itemIndex, 
-  @required double pageValue,
-  @required double totalHeight,
-  @required double width,
-  @required CarouselController controller,
+  required BuildContext context, 
+  required int itemIndex, 
+  required double pageValue,
+  required double totalHeight,
+  required double width,
+  required CarouselController? controller,
 }) => sidereusPositionedItemBuilder(
   content: childBuilder(itemIndex),
   context: context,
@@ -22,14 +22,14 @@ PositionedItemBuilder readySidereusPositionedItemBuilder(Widget Function(int) ch
 );
 
 Widget sidereusPositionedItemBuilder({
-  @required BuildContext context, 
-  @required int itemIndex, 
-  @required double pageValue,
-  @required double totalHeight,
-  @required double width,
-  @required CarouselController controller,
+  required BuildContext context, 
+  required int itemIndex, 
+  required double pageValue,
+  required double totalHeight,
+  required double width,
+  required CarouselController? controller,
 
-  @required Widget content,
+  required Widget content,
 }){
   final distance = 1 - (pageValue - itemIndex).clamp(-1, 1).abs();
   final minScale = 0.95;

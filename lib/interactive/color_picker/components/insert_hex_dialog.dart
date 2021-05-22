@@ -8,8 +8,8 @@ class InsertHexDialog extends StatelessWidget {
   final void Function(String) onConfirm;
 
   InsertHexDialog({
-    @required this.startingString,
-    @required this.onConfirm,
+    required this.startingString,
+    required this.onConfirm,
   });
 
 
@@ -28,7 +28,7 @@ class InsertHexDialog extends StatelessWidget {
     
   }
 
-  String _pasteChecker(String input){
+  String? _pasteChecker(String input){
     if(input.length < 6) input = input.padLeft(6, '0');
     else if(input.length > 6) input = input.substring(input.length-6);
 

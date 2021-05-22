@@ -13,11 +13,10 @@ class ManualColorPicker extends StatefulWidget {
   final Function(Color) onChanged;
 
   ManualColorPicker({
-    Key key,
-    @required this.color,
-    @required this.onChanged,
-  }) : assert(color != null),
-        super(key: key);
+    Key? key,
+    required this.color,
+    required this.onChanged,
+  }): super(key: key);
 
   @override
   _ManualColorPickerState createState() => _ManualColorPickerState();
@@ -26,9 +25,9 @@ class ManualColorPicker extends StatefulWidget {
 
 class _ManualColorPickerState extends State<ManualColorPicker> {
 
-  double _hue;
-  double _sat;
-  double _val;
+  late double _hue;
+  late double _sat;
+  late double _val;
 
   HSVColor get color => HSVColor.fromColor(this.widget.color);
 
@@ -219,22 +218,21 @@ class PalettePicker extends StatefulWidget {
   final Color circleColor;
 
   PalettePicker({
-    Key key,
+    Key? key,
 
-    @required this.width,
-    @required this.height,
-    @required this.position,
-    @required this.onChanged,
+    required this.width,
+    required this.height,
+    required this.position,
+    required this.onChanged,
     this.circleColor = Colors.black,
     this.leftPosition=0.0,
     this.rightPosition=1.0,
-    @required this.leftRightColors,
+    required this.leftRightColors,
 
     this.topPosition=0.0,
     this.bottomPosition=1.0,
-    @required this.topBottomColors
-  }) : assert(position != null),
-        super(key: key);
+    required this.topBottomColors
+  }):  super(key: key);
 
   @override
   _PalettePickerState createState() => _PalettePickerState();
@@ -250,11 +248,11 @@ class _PalettePickerState extends State<PalettePicker> {
   }
 
 
-  Offset get position=> super.widget.position;
-  double get leftPosition=> super.widget.leftPosition;
-  double get rightPosition=> super.widget.rightPosition;
-  double get topPosition=> super.widget.topPosition;
-  double get bottomPosition=> super.widget.bottomPosition;
+  Offset get position => widget.position;
+  double get leftPosition => widget.leftPosition;
+  double get rightPosition => widget.rightPosition;
+  double get topPosition => widget.topPosition;
+  double get bottomPosition => widget.bottomPosition;
 
 
   /// Position(min, max) > Ratio(0, 1)
@@ -277,7 +275,7 @@ class _PalettePickerState extends State<PalettePicker> {
 
   /// Ratio(0, 1) > Position(min, max)
   void ratioToPosition(Offset ratio){
-    RenderBox renderBox = this.paletteKey.currentContext.findRenderObject();
+    RenderBox renderBox = this.paletteKey.currentContext!.findRenderObject() as RenderBox;
     Offset startposition = renderBox.localToGlobal(Offset.zero);
     Size size = renderBox.size;
     Offset updateOffset= ratio-startposition;
@@ -370,8 +368,8 @@ class _PalettePickerState extends State<PalettePicker> {
 
 class _PalettePainter extends CustomPainter{
 
-  final Offset ratio;
-  final Color circleColor;
+  final Offset? ratio;
+  final Color? circleColor;
   _PalettePainter({this.ratio, this.circleColor}):super();
 
   @override
@@ -382,7 +380,7 @@ class _PalettePainter extends CustomPainter{
       ..strokeWidth=2
       ..style=PaintingStyle.stroke;
 
-    Offset offset=Offset(size.width * this.ratio.dx, size.height * this.ratio.dy);
+    Offset offset=Offset(size.width * this.ratio!.dx, size.height * this.ratio!.dy);
     canvas.drawCircle(offset, 8, paintBlack);
   }
 

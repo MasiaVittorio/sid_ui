@@ -4,26 +4,26 @@ part of radio_slider;
 class _ButtonWithoutIcon extends StatelessWidget {
 
   _ButtonWithoutIcon({
-    @required this.selectedColor,
-    @required this.item,
-    @required this.isShowing,
-    @required this.duration,
-    @required this.height,
-    @required this.width,
+    required this.selectedColor,
+    required this.item,
+    required this.isShowing,
+    required this.duration,
+    required this.height,
+    required this.width,
   });
 
   final double height;
   final double width;
 
   final Duration duration;
-  final Color selectedColor;
+  final Color? selectedColor;
   final bool isShowing;
   final RadioSliderItem item;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final RadioSliderThemeData radioTheme = RadioSliderTheme.of(context);
+    final RadioSliderThemeData? radioTheme = RadioSliderTheme.of(context);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -42,7 +42,7 @@ class _ButtonWithoutIcon extends StatelessWidget {
               style: TextStyle(
                 color: this.selectedColor 
                   ?? radioTheme?.selectedColor
-                    ?? theme?.textTheme?.bodyText2?.color,
+                    ?? theme.textTheme.bodyText2?.color,
               ),
               child: item.title
             )
@@ -53,7 +53,7 @@ class _ButtonWithoutIcon extends StatelessWidget {
             alignment: Alignment.center,
             child: IconTheme.merge(
               data: IconThemeData(
-                color: theme?.unselectedWidgetColor,
+                color: theme.unselectedWidgetColor,
               ),
               child: item.icon
             ),

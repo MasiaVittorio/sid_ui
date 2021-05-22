@@ -5,23 +5,22 @@ enum PresentMode {scale,slide,}
 
 class AnimatedPresented extends ImplicitlyAnimatedWidget {
   AnimatedPresented({
-    @required this.presented,
+    required this.presented,
     this.child,
     this.offScale = 0.8,
-    Curve curve,
-    @required Duration duration,
+    Curve? curve,
+    required Duration duration,
     this.presentMode = PresentMode.scale,
     this.slideOffset = const Offset(0,200),
     this.fadeFirstFraction = 0.0,
-  })  : assert(presented != null),
-        super(
-          curve: curve ?? Curves.linear, 
-          duration: duration ?? const Duration(milliseconds: 200)
-        );
+  }) : super(
+    curve: curve ?? Curves.linear, 
+    duration: duration,
+  );
 
   final double offScale;
   final bool presented;
-  final Widget child;
+  final Widget? child;
   final PresentMode presentMode;
   final Offset slideOffset;
 
@@ -36,7 +35,7 @@ class AnimatedPresented extends ImplicitlyAnimatedWidget {
 }
 
 class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedPresented> {
-  Tween<double> _presented;
+  Tween<double?>? _presented;
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
@@ -45,17 +44,17 @@ class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedPresented> {
       widget.presented ? 1.0 : 0.0,
       (dynamic value) 
         => Tween<double>(begin: value)
-    );
+    ) as Tween<double?>?;
   }
 
   @override
   Widget build(BuildContext context) {
-    final double _val = _presented.evaluate(animation);
+    final double? _val = _presented!.evaluate(animation);
     return IgnorePointer(
       ignoring: !widget.presented,
       child: widget.presentMode == PresentMode.scale ? 
         Transform.scale(
-          scale: _val.mapToRange(widget.offScale, 1.0),
+          scale: _val!.mapToRange(widget.offScale, 1.0),
           alignment: Alignment.center,
           child: Opacity(
             opacity: _val,
@@ -64,7 +63,7 @@ class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedPresented> {
         )
         : Transform.translate(
           offset: Offset(
-            Curves.easeInOut.transform(_val).mapToRange(widget.slideOffset.dx, 0.0),
+            Curves.easeInOut.transform(_val!).mapToRange(widget.slideOffset.dx, 0.0),
             Curves.easeInOut.transform(_val).mapToRange(widget.slideOffset.dy, 0.0),
           ),
           child: Opacity(

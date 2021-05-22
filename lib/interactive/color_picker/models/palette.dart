@@ -14,7 +14,7 @@ extension _DistanceColor on Color{
 
 class PaletteTab{
 
-  static Color findClosestMaterialColor(Color color){
+  static Color findClosestMaterialColor(Color? color){
     if(color == null) return Colors.red;
     Color closest = Colors.black;
     double minDistance = double.infinity;
@@ -28,12 +28,12 @@ class PaletteTab{
     return closest;
   }
 
-  static int findClosestTabIndex(List<PaletteTab> tabs, Color color){
+  static int? findClosestTabIndex(List<PaletteTab> tabs, Color? color){
     if(color == null) {
-      if(tabs == null || tabs.isEmpty) return null;
+      if(tabs.isEmpty) return null;
       else return 0;
     }
-    int index;
+    int? index;
     double minDistance = double.infinity;
     for(int i=0; i<tabs.length; ++i){
       for(final c in tabs[i].shades){
@@ -75,8 +75,8 @@ class PaletteTab{
   ];
 
   PaletteTab({
-    @required List<Color> mains,
-    @required this.name,
+    required List<Color> mains,
+    required this.name,
   }): 
     this.colors = <_PaletteColor>[
       for(final c in mains)
@@ -86,7 +86,7 @@ class PaletteTab{
       for(final col in mains)
         ..._PaletteColor(mainColor: col).shades,
     ],
-    assert(mains != null && mains.length>0);
+    assert(mains.length>0);
 
   final List<_PaletteColor> colors;
   final String name;
@@ -107,19 +107,19 @@ class _PaletteColor{
     = <int>[100, 200, 400, 700];
 
   _PaletteColor({
-    @required this.mainColor,
+    required this.mainColor,
   }): shades = <Color>[
     if(mainColor == Colors.grey)
-      for(final s in _greyShades) Colors.grey[s]
+      for(final s in _greyShades) Colors.grey[s]!
 
     else if(mainColor == Colors.black || mainColor == Colors.white)
       mainColor
 
     else if(mainColor is MaterialAccentColor)
-      for(final s in _accentShades) mainColor[s]
+      for(final s in _accentShades) mainColor[s]!
 
     else if(mainColor is MaterialColor)
-      for(final s in _materialShades) mainColor[s]
+      for(final s in _materialShades) mainColor[s]!
 
     else Colors.black,
   ],

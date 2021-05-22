@@ -16,21 +16,21 @@ class CircleNumber extends StatefulWidget {
 
   final TextStyle style;
 
-  final Widget extraIcon;
+  final Widget? extraIcon;
 
 
   CircleNumber({
-    @required this.duration,
-    @required this.open,
-    @required this.numberOpacity,
-    @required this.size,
-    @required this.borderRadiusFraction,
-    @required this.value,
-    @required this.increment,
-    @required this.color,
-    @required this.style,
+    required this.duration,
+    required this.open,
+    required this.numberOpacity,
+    required this.size,
+    required this.borderRadiusFraction,
+    required this.value,
+    required this.increment,
+    required this.color,
+    required this.style,
     this.extraIcon,
-    Key key,
+    Key? key,
   }):super(key: key);
 
   @override
@@ -39,10 +39,10 @@ class CircleNumber extends StatefulWidget {
 
 class _CircleNumberState extends State<CircleNumber> with TickerProviderStateMixin {
 
-  AnimationController moveController;
+  late AnimationController moveController;
 
-  int _lastValue;
-  int _prevValue;
+  int? _lastValue;
+  int? _prevValue;
 
   @override
   void initState() {
@@ -88,9 +88,9 @@ class _CircleNumberState extends State<CircleNumber> with TickerProviderStateMix
     final double size = widget.size;
 
     int _inc = this._prevValue != null ?
-      widget.value - this._prevValue
+      widget.value - this._prevValue!
       : widget.increment;
-    int _val = this._prevValue != null ?
+    int? _val = this._prevValue != null ?
       this._prevValue : widget.value;
     
     return AnimatedOpacity(
@@ -152,7 +152,7 @@ class _CircleNumberState extends State<CircleNumber> with TickerProviderStateMix
 
     double size = widget.size;
 
-    final Widget extraIconPositioned = widget.extraIcon == null 
+    final Widget? extraIconPositioned = widget.extraIcon == null 
       ? null
       :  Positioned(
         left: 0,
@@ -168,19 +168,19 @@ class _CircleNumberState extends State<CircleNumber> with TickerProviderStateMix
     final Widget content = AnimatedBuilder(
       animation: this.moveController,
       child: text,
-      builder: (BuildContext context, Widget child) {
+      builder: (BuildContext context, Widget? child) {
         return Stack(
           fit: StackFit.expand,
           alignment: Alignment.centerLeft,
           children: <Widget>[
-            if(widget.extraIcon != null)
+            if(extraIconPositioned != null)
               extraIconPositioned,
             Positioned(
               top: 0.0,
               bottom: 0.0,
               left: 0.0 - moveController.value * size * 2,
               width: size * 3.0,
-              child: child,
+              child: child!,
             ),
           ],
         );

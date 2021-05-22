@@ -4,12 +4,12 @@ class _Background extends StatelessWidget {
 
   _Background(this.backgroundColor);
 
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final RadioSliderThemeData radioTheme = RadioSliderTheme.of(context);
+    final RadioSliderThemeData? radioTheme = RadioSliderTheme.of(context);
 
     return Material(
       color: this.backgroundColor

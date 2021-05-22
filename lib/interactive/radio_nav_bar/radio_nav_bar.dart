@@ -10,26 +10,23 @@ class RadioNavBar<T> extends StatelessWidget {
   //=============================================
   // Constructor
   RadioNavBar({
-    @required this.selectedValue,
-    @required this.orderedValues,
-    @required this.items,
-    @required this.onSelect,
+    required this.selectedValue,
+    required this.orderedValues,
+    required this.items,
+    required this.onSelect,
     this.duration = const Duration(milliseconds: 250),
     this.topPadding = 0.0,
-    double tileSize = defaultTileSize,
+    this.tileSize = defaultTileSize,
     this.singleBackgroundColor,
     this.forceSingleColor = false,
     this.forceBrightness,
     this.accentTextColor,
-    bool googleLike = false,
+    this.googleLike = false,
     this.badges,
-    Key key,
+    Key? key,
   }): shifting = RadioNavBarItem.allColoredItems(items.values) ?? false,
-      tileSize = tileSize ?? defaultTileSize,
-      googleLike = googleLike ?? false,
-      super(key: key){
-        assert(shifting != null);
-      }
+      assert(items.containsKey(selectedValue)),
+      super(key: key);
   
 
   //=============================================
@@ -41,15 +38,15 @@ class RadioNavBar<T> extends StatelessWidget {
   final void Function(T) onSelect;
   final bool shifting;
   final double tileSize;
-  final Color singleBackgroundColor;
-  final Color accentTextColor;
+  final Color? singleBackgroundColor;
+  final Color? accentTextColor;
   static const double defaultTileSize = 56.0;
   final Duration duration;
   final bool forceSingleColor;
-  final Brightness forceBrightness;
+  final Brightness? forceBrightness;
   /// "white" (canvas) background, different accent color per page
   final bool googleLike;
-  final Map<T, bool> badges; // if not null, true values will show a badge over the icon
+  final Map<T, bool>? badges; // if not null, true values will show a badge over the icon
 
 
   static double bottomPaddingFromMQ(MediaQueryData mediaQuery)
@@ -63,8 +60,8 @@ class RadioNavBar<T> extends StatelessWidget {
     final double totalHeight = topPadding + bottomPadding + tileSize;
     final ThemeData theme = Theme.of(context);
     Alignment alignment;
-    Color color;
 
+    Color color;
     bool single;
     if(!shifting || forceSingleColor == true || googleLike){
       single = true;
@@ -84,10 +81,10 @@ class RadioNavBar<T> extends StatelessWidget {
         splashHorizontalAlignment, 
         barCenterVerticalAlignment,
       );
-      color = items[selectedValue].color;
+      color = items[selectedValue]!.color ?? theme.canvasColor;
     }
 
-    final Brightness _forcedBrightness = googleLike 
+    final Brightness? _forcedBrightness = googleLike 
         ? null : this.forceBrightness;
     final Brightness colorBrightness = _forcedBrightness
         ?? ThemeData.estimateBrightnessForColor(color);
@@ -97,9 +94,9 @@ class RadioNavBar<T> extends StatelessWidget {
       : Colors.white.withOpacity(0.8);
 
     final Color _accentTextColor = (single && !googleLike && this.accentTextColor != null) 
-      ? this.accentTextColor
+      ? this.accentTextColor!
       : (googleLike 
-        ? items[selectedValue].color
+        ? items[selectedValue]!.color
         : null
       ) ?? unselectedIconColor.withOpacity(1.0);
 
@@ -144,8 +141,8 @@ class RadioNavBar<T> extends StatelessWidget {
                   ]);
                 },
               )),
-              _Tile(items[value], 
-                badge: badges == null ? false : (badges[value] ?? false),
+              _Tile(items[value]!, 
+                badge: badges == null ? false : (badges![value] ?? false),
                 accentTextColor: _accentTextColor,
                 duration: duration,
                 selected: value == this.selectedValue,
@@ -183,13 +180,13 @@ class _Tile extends StatelessWidget {
   final Color accentTextColor;
   final bool badge;
   _Tile(this.item, {
-    @required this.badge,
-    @required this.duration,
-    @required this.selected,
-    @required this.onTap,
-    @required this.animatedIcon,
-    @required this.height,
-    @required this.accentTextColor,
+    required this.badge,
+    required this.duration,
+    required this.selected,
+    required this.onTap,
+    required this.animatedIcon,
+    required this.height,
+    required this.accentTextColor,
   });
 
   @override
@@ -247,11 +244,11 @@ class _Icon extends StatelessWidget {
   final Duration duration;
   final Color accentTextColor;
   _Icon(this.item, {
-    @required this.accentTextColor,
-    @required this.selected,
-    @required this.animated,
-    @required this.height,
-    @required this.duration,
+    required this.accentTextColor,
+    required this.selected,
+    required this.animated,
+    required this.height,
+    required this.duration,
   });
 
   @override
@@ -299,10 +296,10 @@ class _Label extends StatelessWidget {
   final Duration duration;
   final TextStyle textStyle;
   _Label(this.item, {
-    @required this.duration,
-    @required this.selected,
-    @required this.height,
-    @required this.textStyle,
+    required this.duration,
+    required this.selected,
+    required this.height,
+    required this.textStyle,
   });
 
   @override

@@ -6,10 +6,10 @@ class RadioSliderItem {
 
   final Widget title;
   final Widget icon;
-  final Widget selectedIcon;
+  final Widget? selectedIcon;
   const RadioSliderItem({
-    @required this.title,
-    @required this.icon,
+    required this.title,
+    required this.icon,
     this.selectedIcon,
   });
 
@@ -23,23 +23,23 @@ class RadioSlider extends StatefulWidget{
 
   final Duration duration;
 
-  final Widget title;
+  final Widget? title;
 
-  final Color selectedColor;
-  final Color backgroundColor;
-  final bool hideOpenIcons;
-  final bool elevateSlider;
+  final Color? selectedColor;
+  final Color? backgroundColor;
+  final bool? hideOpenIcons;
+  final bool? elevateSlider;
   static const bool _kElevateSlider = false;
 
-  final EdgeInsets margin;
+  final EdgeInsets? margin;
   static const EdgeInsets _kMargin = EdgeInsets.all(10.0);
-  final double height;
+  final double? height;
   static const double _kHeight = 56.0;
 
   RadioSlider({
-    @required this.items,
-    @required this.selectedIndex,
-    @required this.onTap,
+    required this.items,
+    required this.selectedIndex,
+    required this.onTap,
     this.duration = const Duration(milliseconds: 250),
     this.title,
     this.elevateSlider,
@@ -48,9 +48,7 @@ class RadioSlider extends StatefulWidget{
     this.selectedColor,
     this.backgroundColor,
     this.hideOpenIcons,
-  }): 
-    assert(duration != null),
-    assert(items != null);
+  });
 
   @override
   _RadioSliderState createState() => _RadioSliderState();
@@ -61,8 +59,8 @@ class _RadioSliderState extends State<RadioSlider> with TickerProviderStateMixin
 
   //================================
   // State
-  AnimationController _animation;
-  int _index;
+  AnimationController? _animation;
+  int? _index;
   bool _sliding = false;
 
   @override
@@ -96,7 +94,7 @@ class _RadioSliderState extends State<RadioSlider> with TickerProviderStateMixin
     if(this._index != widget.selectedIndex){
       goToIndex(widget.selectedIndex);
     }
-    if(widget.duration != this._animation.duration){
+    if(widget.duration != this._animation!.duration){
       this.initController();
     }
   }
@@ -110,16 +108,16 @@ class _RadioSliderState extends State<RadioSlider> with TickerProviderStateMixin
 
   void goToIndex(int index) {
     this._index = index;
-    this._animation.animateTo(indexVal(index), curve: Curves.easeOut);
+    this._animation!.animateTo(indexVal(index), curve: Curves.easeOut);
   }
 
   void snapToIndex(int index) {
     this._index = index;
-    this._animation.animateTo(indexVal(index), duration: Duration(milliseconds: 90));
+    this._animation!.animateTo(indexVal(index), duration: Duration(milliseconds: 90));
   }
 
   void onDragUpdate(DragUpdateDetails details, double max){
-    this._animation.value += details.primaryDelta / maxSpace(max);
+    this._animation!.value += details.primaryDelta! / maxSpace(max);
     _sliding = true;
   }
 
@@ -150,7 +148,7 @@ class _RadioSliderState extends State<RadioSlider> with TickerProviderStateMixin
    
   @override
   Widget build(BuildContext context) {
-    final RadioSliderThemeData radioTheme = RadioSliderTheme.of(context);
+    final RadioSliderThemeData? radioTheme = RadioSliderTheme.of(context);
     final double _height = height(radioTheme);
 
     Widget result = SizedBox(

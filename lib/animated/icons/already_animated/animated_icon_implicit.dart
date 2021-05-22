@@ -4,30 +4,28 @@ import 'package:flutter/material.dart';
 
 class ImplicitlyAnimatedIcon extends ImplicitlyAnimatedWidget {
   ImplicitlyAnimatedIcon({
-    @required this.icon,
-    @required this.progress,
+    required this.icon,
+    required this.progress,
     this.color,
     this.size,
-    Curve curve,
-    @required Duration duration,
-  }):
-    assert(progress != null), 
-    super(
-      curve: curve ?? Curves.linear, 
-      duration: duration ?? const Duration(milliseconds: 200)
-    );
+    Curve? curve,
+    required Duration duration,
+  }): super(
+    curve: curve ?? Curves.linear, 
+    duration: duration,
+  );
 
   final AnimatedIconData icon;
   final double progress;
-  final Color color;
-  final double size;
+  final Color? color;
+  final double? size;
   @override
   _ImplicitlyAnimatedIconState createState() => _ImplicitlyAnimatedIconState();
 }
 
 class _ImplicitlyAnimatedIconState extends AnimatedWidgetBaseState<ImplicitlyAnimatedIcon> {
 
-  Tween<double> _tween;
+  Tween<double?>? _tween;
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
@@ -36,13 +34,13 @@ class _ImplicitlyAnimatedIconState extends AnimatedWidgetBaseState<ImplicitlyAni
       widget.progress,
       (dynamic value) 
         => Tween<double>(begin: value)
-    );
+    ) as Tween<double?>?;
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedIcon(
-      progress: AlwaysStoppedAnimation<double>(this._tween.evaluate(animation)),
+      progress: AlwaysStoppedAnimation<double?>(this._tween!.evaluate(animation)) as Animation<double>,
       icon: widget.icon,
       color: widget.color,
       size: widget.size,

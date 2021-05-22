@@ -21,11 +21,11 @@ class VerticalSlider extends StatelessWidget {
   /// [inactiveColor] properties, although more fine-grained control of the
   /// appearance is achieved using a [SliderThemeData].
   const VerticalSlider({
-    Key key,
-    @required this.value,
-    @required this.onChanged,
-    @required this.height,
-    @required this.width,
+    Key? key,
+    required this.value,
+    required this.onChanged,
+    required this.height,
+    required this.width,
     this.onChangeStart,
     this.onChangeEnd,
     this.min = 0.0,
@@ -35,13 +35,10 @@ class VerticalSlider extends StatelessWidget {
     this.activeColor,
     this.inactiveColor,
     this.semanticFormatterCallback,
-  }) : assert(value != null),
-       assert(min != null),
-       assert(max != null),
-       assert(min <= max),
-       assert(value >= min && value <= max),
-       assert(divisions == null || divisions > 0),
-       super(key: key);
+  }): assert(min <= max),
+      assert(value >= min && value <= max),
+      assert(divisions == null || divisions > 0),
+      super(key: key);
 
   final double height;
   final double width;
@@ -149,7 +146,7 @@ class VerticalSlider extends StatelessWidget {
   ///
   ///  * [onChangeEnd] for a callback that is called when the value change is
   ///    complete.
-  final ValueChanged<double> onChangeStart;
+  final ValueChanged<double>? onChangeStart;
 
   /// Called when the user is done selecting a new value for the slider.
   ///
@@ -182,7 +179,7 @@ class VerticalSlider extends StatelessWidget {
   ///
   ///  * [onChangeStart] for a callback that is called when a value change
   ///    begins.
-  final ValueChanged<double> onChangeEnd;
+  final ValueChanged<double>? onChangeEnd;
 
   /// The minimum value the user can select.
   ///
@@ -203,7 +200,7 @@ class VerticalSlider extends StatelessWidget {
   /// Typically used with [label] to show the current discrete value.
   ///
   /// If null, the slider is continuous.
-  final int divisions;
+  final int? divisions;
 
   /// A label to show above the slider when the slider is active.
   ///
@@ -219,7 +216,7 @@ class VerticalSlider extends StatelessWidget {
   ///
   ///  * [SliderComponentShape] for how to create a custom value indicator
   ///    shape.
-  final String label;
+  final String? label;
 
   /// The color to use for the portion of the slider track that is active.
   ///
@@ -230,7 +227,7 @@ class VerticalSlider extends StatelessWidget {
   ///
   /// Using a [SliderTheme] gives much more fine-grained control over the
   /// appearance of various components of the slider.
-  final Color activeColor;
+  final Color? activeColor;
 
   /// The color for the inactive portion of the slider track.
   ///
@@ -242,7 +239,7 @@ class VerticalSlider extends StatelessWidget {
   ///
   /// Using a [SliderTheme] gives much more fine-grained control over the
   /// appearance of various components of the slider.
-  final Color inactiveColor;
+  final Color? inactiveColor;
 
   /// The callback used to create a semantic value from a slider value.
   ///
@@ -273,7 +270,7 @@ class VerticalSlider extends StatelessWidget {
   ///  )
   /// ```
   /// {@end-tool}
-  final SemanticFormatterCallback semanticFormatterCallback;
+  final SemanticFormatterCallback? semanticFormatterCallback;
 
 
 }

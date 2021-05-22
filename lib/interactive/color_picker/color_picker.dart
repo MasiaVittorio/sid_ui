@@ -16,22 +16,22 @@ enum ColorPickerMode{
 
 class MaterialColorPicker extends StatefulWidget {
   final Color color;
-  final Function(Color) onSubmitted;
+  final Function(Color?) onSubmitted;
 
-  final void Function() underscrollCallback;
+  final void Function()? underscrollCallback;
 
   final Widget Function({
-    BuildContext context,
-    void Function(ColorPickerMode) toggleMode,
-    void Function() onSubmitted,
-    ColorPickerMode currentMode,
-    Color currentColor,
-    Color currentContrast,
-  }) navigatorAndSaveBuilder;
+    required BuildContext context,
+    void Function(ColorPickerMode)? toggleMode,
+    void Function()? onSubmitted,
+    ColorPickerMode? currentMode,
+    Color? currentColor,
+    Color? currentContrast,
+  })? navigatorAndSaveBuilder;
 
   MaterialColorPicker({
-    @required this.color,
-    @required this.onSubmitted,
+    required this.color,
+    required this.onSubmitted,
     this.navigatorAndSaveBuilder,
     this.underscrollCallback,
   });
@@ -42,16 +42,16 @@ class MaterialColorPicker extends StatefulWidget {
 
 class _MaterialColorPickerState extends State<MaterialColorPicker> with TickerProviderStateMixin {
 
-  Color _color;
-  ColorPickerMode _mode = ColorPickerMode.custom;
-  Widget Function({
-    BuildContext context,
-    void Function(ColorPickerMode) toggleMode,
-    void Function() onSubmitted,
-    ColorPickerMode currentMode,
-    Color currentColor,
-    Color currentContrast,
-  }) _navigatorAndSaveBuilder;
+  Color? _color;
+  ColorPickerMode? _mode = ColorPickerMode.custom;
+  late final Widget Function({
+    required BuildContext context,
+    void Function(ColorPickerMode?)? toggleMode,
+    void Function()? onSubmitted,
+    ColorPickerMode? currentMode,
+    Color? currentColor,
+    Color? currentContrast,
+  })? _navigatorAndSaveBuilder;
 
   @override
   void initState() {
@@ -62,10 +62,7 @@ class _MaterialColorPickerState extends State<MaterialColorPicker> with TickerPr
     else 
       this._navigatorAndSaveBuilder = widget.navigatorAndSaveBuilder;
 
-    if(this.widget.color == null)
-      this._color = Colors.red.shade500;
-    else
-      this._color = widget.color;
+    this._color = widget.color;
     
     if(PaletteTab.allColors.contains(this._color))
       this._mode = ColorPickerMode.palette;
@@ -73,7 +70,7 @@ class _MaterialColorPickerState extends State<MaterialColorPicker> with TickerPr
       this._mode = ColorPickerMode.manual;
   }
 
-  void toggleMode(ColorPickerMode newMode) => setState(() {
+  void toggleMode(ColorPickerMode? newMode) => setState(() {
     this._mode = newMode;
     if(this._mode == ColorPickerMode.palette){
       if(PaletteTab.allColors.contains(this._color) == false){
@@ -82,7 +79,7 @@ class _MaterialColorPickerState extends State<MaterialColorPicker> with TickerPr
     }      
   });
 
-  void onColor(Color c) {
+  void onColor(Color? c) {
     setState(() {
       this._color = c;               
     });
@@ -96,7 +93,7 @@ class _MaterialColorPickerState extends State<MaterialColorPicker> with TickerPr
     final Map<ColorPickerMode, Widget> _child = {
       ColorPickerMode.manual : ManualColorPicker(
         onChanged: this.onColor,
-        color: this._color,
+        color: this._color!,
       ),
       ColorPickerMode.custom : CustomColorPicker(
         displayerUndescrollCallback: this.widget.underscrollCallback,
@@ -117,19 +114,19 @@ class _MaterialColorPickerState extends State<MaterialColorPicker> with TickerPr
             builder: (BuildContext context, BoxConstraints constraints) {
               return Container(
                 constraints: constraints,
-                child: _child[this._mode],
+                child: _child[this._mode!],
               );
             }
           ),
         ),
         _divider,
-        this._navigatorAndSaveBuilder(
+        this._navigatorAndSaveBuilder!(
           context: context,
-          toggleMode: (ColorPickerMode cm) => this.toggleMode(cm),
+          toggleMode: (ColorPickerMode? cm) => this.toggleMode(cm),
           onSubmitted: () => this.widget.onSubmitted(this._color),
           currentMode: this._mode,
           currentColor: this._color,
-          currentContrast: ThemeData.estimateBrightnessForColor(this._color) == Brightness.dark 
+          currentContrast: ThemeData.estimateBrightnessForColor(this._color!) == Brightness.dark 
             ? Colors.white 
             : Colors.black
         )
@@ -141,12 +138,12 @@ class _MaterialColorPickerState extends State<MaterialColorPicker> with TickerPr
 }
 
 Widget defaultNavigatorAndSaveBuilder({
-  BuildContext context,
-  void Function(ColorPickerMode) toggleMode,
-  void Function() onSubmitted,
-  ColorPickerMode currentMode,
-  Color currentColor,
-  Color currentContrast,
+  required BuildContext context,
+  void Function(ColorPickerMode?)? toggleMode,
+  void Function()? onSubmitted,
+  ColorPickerMode? currentMode,
+  Color? currentColor,
+  Color? currentContrast,
 }){
 
   Color _iconColor = Theme.of(context).canvasColor.contrast;
@@ -159,9 +156,9 @@ Widget defaultNavigatorAndSaveBuilder({
           ColorPickerMode.manual : 0,
           ColorPickerMode.custom : 1,
           ColorPickerMode.palette : 2,
-        }[currentMode],
+        }[currentMode!]!,
         onTap: (int i){
-          toggleMode({
+          toggleMode!({
             0 : ColorPickerMode.manual,
             1 : ColorPickerMode.custom,
             2 : ColorPickerMode.palette,

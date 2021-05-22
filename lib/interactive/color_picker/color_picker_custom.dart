@@ -7,14 +7,14 @@ import 'package:sid_utils/sid_utils.dart';
 
 
 class CustomColorPicker extends StatefulWidget {
-  final Color color;
-  final void Function(Color) onChanged;
-  final void Function() displayerUndescrollCallback;
+  final Color? color;
+  final void Function(Color?) onChanged;
+  final void Function()? displayerUndescrollCallback;
 
   CustomColorPicker({    
-    @required this.color,
-    @required this.onChanged,
-    @required this.displayerUndescrollCallback,
+    required this.color,
+    required this.onChanged,
+    required this.displayerUndescrollCallback,
   });
 
   static final double sliderHeight = 64;
@@ -27,15 +27,15 @@ class CustomColorPicker extends StatefulWidget {
 
 class _CustomColorPickerState extends State<CustomColorPicker> with TickerProviderStateMixin {
 
-  Color _color;
-  bool _rgbMode;
+  Color? _color;
+  bool? _rgbMode;
 
-  double _hue;
-  double _sat;
-  double _value;
+  late double _hue;
+  late double _sat;
+  late double _value;
 
   bool _insertMode= false; //wether youre inserting a text or not
-  TextEditingController _controller;
+  TextEditingController? _controller;
   // String _clipboardString;
 
   @override
@@ -51,9 +51,9 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
     this._insertMode = false;   
     this._controller = TextEditingController(
       text: ( 
-        this._color.red    .toRadixString(16).padLeft(2,'0') +
-        this._color.green  .toRadixString(16).padLeft(2,'0') +
-        this._color.blue   .toRadixString(16).padLeft(2,'0')
+        this._color!.red    .toRadixString(16).padLeft(2,'0') +
+        this._color!.green  .toRadixString(16).padLeft(2,'0') +
+        this._color!.blue   .toRadixString(16).padLeft(2,'0')
       ).toUpperCase(),
     );
     
@@ -80,11 +80,11 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
   }
 
   void copyToClipboard(){
-    Clipboard.setData(ClipboardData(text: _color.hexString));
+    Clipboard.setData(ClipboardData(text: _color!.hexString));
   }
 
   void _updateHsvFromColor(){
-    final _hsv  = HSVColor.fromColor(this._color);
+    final _hsv  = HSVColor.fromColor(this._color!);
 
     this._hue   = _hsv.hue;
     this._sat   = _hsv.saturation;
@@ -94,7 +94,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
     this._color = this.colorFromHsv;
   }
   Color get colorFromHsv => HSVColor.fromAHSV(
-    this._color.alpha/255.toDouble(),
+    this._color!.alpha/255.toDouble(),
     this._hue,
     this._sat,
     this._value,
@@ -175,15 +175,15 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
     "Green" : Colors.green,
   };
   Widget _rgbSlider(String rgb){
-    final Color _clr = this._color;
+    final Color _clr = this._color!;
 
     int _number = {
       "Red"   : _clr.red,
       "Green" : _clr.green,
       "Blue"  : _clr.blue,        
-    }[rgb];
+    }[rgb]!;
 
-    Color _baseColor = _baseColorMap[rgb];
+    Color _baseColor = _baseColorMap[rgb]!;
 
     return AdvancedSlider(
       height: CustomColorPicker.sliderHeight,
@@ -207,8 +207,8 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
     );
   }
 
-  Widget _materialDisplayer(BoxConstraints constraints, bool big) {
-    final bool darkBkg = ThemeData.estimateBrightnessForColor(this._color) == Brightness.dark;
+  Widget _materialDisplayer(BoxConstraints? constraints, bool big) {
+    final bool darkBkg = ThemeData.estimateBrightnessForColor(this._color!) == Brightness.dark;
 
     return Material(
       color: this._color,
@@ -231,7 +231,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
         ? IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => setState(() {
-            this._controller.clear();
+            this._controller!.clear();
             this._insertMode = false;
           }),
         )
@@ -275,7 +275,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
   );
 
   Widget _realCenter(bool darkBkg) {
-    String _errorString = checkForHexString(this._controller.text) == false ? "Error" : "";
+    String _errorString = checkForHexString(this._controller!.text) == false ? "Error" : "";
     bool _error = _errorString != '';
 
     return this._insertMode 
@@ -313,11 +313,11 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
         }),
         child: Center(
           child: Text(
-            "#FF ${_color.hexString}",
+            "#FF ${_color!.hexString}",
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700, 
-              color: ThemeData.estimateBrightnessForColor(this._color) == Brightness.dark 
+              color: ThemeData.estimateBrightnessForColor(this._color!) == Brightness.dark 
                 ? Colors.white 
                 : Colors.black
             ),
@@ -327,7 +327,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
   }
 
   void confirmInsert() => setState(() {
-    this._color = hexToColor(this._controller.text);
+    this._color = hexToColor(this._controller!.text);
     this._updateHsvFromColor();
     widget.onChanged(this._color);
     this._insertMode = false;
