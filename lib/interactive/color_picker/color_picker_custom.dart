@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:sid_ui/decorations/up_shadower.dart';
 import 'package:sid_ui/interactive/advanced_slider/advanced_slider.dart';
 import 'models/color_to_hex.dart';
-import 'package:tinycolor/tinycolor.dart';
 import 'package:sid_utils/sid_utils.dart';
 
 
@@ -85,7 +84,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
   }
 
   void _updateHsvFromColor(){
-    final _hsv  = TinyColor(this._color).toHsv();
+    final _hsv  = HSVColor.fromColor(this._color);
 
     this._hue   = _hsv.hue;
     this._sat   = _hsv.saturation;
@@ -94,24 +93,23 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
   void _updateColorFromHsv(){    
     this._color = this.colorFromHsv;
   }
-  Color get colorFromHsv => TinyColor.fromHSV(HSVColor.fromAHSV(
+  Color get colorFromHsv => HSVColor.fromAHSV(
     this._color.alpha/255.toDouble(),
     this._hue,
     this._sat,
     this._value,
-  )).color;
+  ).toColor();
 
   @override
   Widget build(BuildContext context) 
     => LayoutBuilder(builder: (context, externalConstraints) {
 
+        final themeOfContext = Theme.of(context);
+        final sliderThemeOfContext = SliderTheme.of(context);
+
         final bool _big = CustomColorPicker.sliderHeight * 6 + 50 <= externalConstraints.maxHeight;       
 
-        final Color _activeColor = TinyColor(
-          Theme.of(context).canvasColor
-        ).isDark() 
-          ? Colors.white
-          : Colors.black;
+        final Color _activeColor = themeOfContext.canvasColor.contrast;
 
         final List<Widget> _rgbs = <Widget>[ 
           _rgbSlider("Red"),
@@ -120,14 +118,14 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
         ];
 
         final List<Widget> _hsls = <Widget>[
-          _hueSlider(_activeColor),
-          _saturationSlider(_activeColor),
-          _valueSlider(_activeColor),
+          _hueSlider(_activeColor, sliderThemeOfContext),
+          _saturationSlider(_activeColor, sliderThemeOfContext),
+          _valueSlider(_activeColor, sliderThemeOfContext),
         ];
 
         return Column(
           children: <Widget>[
-            _displayer(_big),
+            _displayer(_big, themeOfContext),
             UpShadower(
               child: Column(
                 children: <Widget>[
@@ -145,8 +143,8 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
 
   bool get _scrollable => this.widget.displayerUndescrollCallback != null;
 
-  Widget _scrollableDisplayer(BoxConstraints constraints, bool big) => Theme(
-    data: Theme.of(context).copyWith(
+  Widget _scrollableDisplayer(BoxConstraints constraints, bool big, ThemeData themeOfContext) => Theme(
+    data: themeOfContext.copyWith(
       accentColor: this._color == Colors.white 
         ? Colors.black
         : Colors.white
@@ -162,11 +160,11 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
     ),
   );
 
-  Widget _displayer(bool big) => this._scrollable 
+  Widget _displayer(bool big, ThemeData themeOfContext) => this._scrollable 
     ? Expanded(child: LayoutBuilder(
       builder: (context, constraints) => Container(
         constraints: constraints,
-        child: _scrollableDisplayer(constraints, big),
+        child: _scrollableDisplayer(constraints, big, themeOfContext),
       ),
     ))
     : Expanded(child: _materialDisplayer(null, big));
@@ -336,14 +334,14 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
   });
 
   final double _hsvSliderHeight = 6;
-  Widget _hueSlider(Color activeColor) => SliderTheme(
-    data: SliderTheme.of(context).copyWith(
-      thumbColor: TinyColor.fromHSV(HSVColor.fromAHSV(
+  Widget _hueSlider(Color activeColor, SliderThemeData sliderThemeOfContext) => SliderTheme(
+    data: sliderThemeOfContext.copyWith(
+      thumbColor: HSVColor.fromAHSV(
         1.0,
         this._hue,
         1.0,
         1.0,
-      )).color,
+      ).toColor(),
       thumbShape: BorderRoundSliderThumbShape(
         border: 2,
         enabledThumbRadius: 8.0,
@@ -353,12 +351,12 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
       trackShape: ShadeRectangularSliderTrackShape(
         gradient: LinearGradient(
           colors: _interpolate(360,0.0,360).map<Color>(
-            (double x) => TinyColor.fromHSV(HSVColor.fromAHSV(
+            (double x) => HSVColor.fromAHSV(
               1.0,
               x,
               1.0,
               1.0,
-            )).color
+            ).toColor(),
           ).toList()
         )
       ),
@@ -379,8 +377,8 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
   );
 
   
-  Widget _saturationSlider(Color activeColor) => SliderTheme(
-    data: SliderTheme.of(context).copyWith(
+  Widget _saturationSlider(Color activeColor, SliderThemeData sliderThemeOfContext) => SliderTheme(
+    data: sliderThemeOfContext.copyWith(
       thumbColor: this._color,
       thumbShape: BorderRoundSliderThumbShape(
         border: 2,
@@ -391,12 +389,12 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
       trackShape: ShadeRectangularSliderTrackShape(
         gradient: LinearGradient(
           colors: _interpolate(100,0.0,1.0).map<Color>(
-            (double x) => TinyColor.fromHSV(HSVColor.fromAHSV(
+            (double x) => HSVColor.fromAHSV(
               1.0,
               this._hue,
               x,
               this._value,
-            )).color
+            ).toColor(),
           ).toList()
         )
       ),
@@ -416,8 +414,8 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
     ),
   );
 
-  Widget _valueSlider(Color activeColor) => SliderTheme(
-    data: SliderTheme.of(context).copyWith(
+  Widget _valueSlider(Color activeColor, SliderThemeData sliderThemeOfContext) => SliderTheme(
+    data: sliderThemeOfContext.copyWith(
       thumbColor: this._color,
       thumbShape: BorderRoundSliderThumbShape(
         border: 2,
@@ -428,12 +426,12 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
       trackShape: ShadeRectangularSliderTrackShape(
         gradient: LinearGradient(
           colors: _interpolate(100,0.0,1.0).map<Color>(
-            (double x) => TinyColor.fromHSV(HSVColor.fromAHSV(
+            (double x) => HSVColor.fromAHSV(
               1.0,
               this._hue,
               this._sat,
               x,
-            )).color
+            ).toColor(),
           ).toList()
         )
       ),

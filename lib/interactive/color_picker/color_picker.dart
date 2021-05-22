@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'color_picker_manual.dart';
 
-import 'package:tinycolor/tinycolor.dart';
+import 'package:sid_utils/sid_utils.dart';
 
 import 'models/palette.dart';
 import 'color_picker_custom.dart';
@@ -149,7 +149,7 @@ Widget defaultNavigatorAndSaveBuilder({
   Color currentContrast,
 }){
 
-  Color _iconColor = TinyColor(Theme.of(context).canvasColor).isDark() ? Colors.white : Colors.black;
+  Color _iconColor = Theme.of(context).canvasColor.contrast;
   Color _inactiveIconColor = _iconColor.withOpacity(0.6);
 
   return Material(

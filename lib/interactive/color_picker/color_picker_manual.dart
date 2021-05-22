@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sid_ui/interactive/advanced_slider/advanced_slider.dart';
 import 'package:sid_ui/interactive/advanced_slider/vertical_slider.dart';
-import 'package:tinycolor/tinycolor.dart';
+import 'package:sid_utils/sid_utils.dart';
 
 ///this takes a bit of code from another package to build 
 ///the saturation / value rectangle: flutter_hsvcolor_picker 
@@ -30,7 +30,8 @@ class _ManualColorPickerState extends State<ManualColorPicker> {
   double _sat;
   double _val;
 
-  HSVColor get color => TinyColor(this.widget.color).toHsv();
+  HSVColor get color => HSVColor.fromColor(this.widget.color);
+
   void _reset(){
     this._hue = this.color.hue;
     this._sat = this.color.saturation;
@@ -58,11 +59,7 @@ class _ManualColorPickerState extends State<ManualColorPicker> {
     }
   }
 
-  Color get themeContrast => TinyColor(
-    Theme.of(context).canvasColor
-  ).isDark() 
-    ? Colors.white
-    : Colors.black;
+  Color get themeContrast => Theme.of(context).canvasColor.contrast;
 
   void colorFromHsv() => super.widget.onChanged(
     HSVColor.fromAHSV(
@@ -159,12 +156,12 @@ class _ManualColorPickerState extends State<ManualColorPicker> {
 
   Widget _hueSlider(Color activeColor, double height) => SliderTheme(
     data: SliderTheme.of(context).copyWith(
-      thumbColor: TinyColor.fromHSV(HSVColor.fromAHSV(
+      thumbColor: HSVColor.fromAHSV(
         1.0,
         this._hue,
         1.0,
         1.0,
-      )).color,
+      ).toColor(),
       thumbShape: BorderRoundSliderThumbShape(
         border: 2,
         enabledThumbRadius: 8.0,
@@ -174,12 +171,12 @@ class _ManualColorPickerState extends State<ManualColorPicker> {
       trackShape: ShadeRectangularSliderTrackShape(
         gradient: LinearGradient(
           colors: _interpolate(360,0.0,360).map<Color>(
-            (double x) => TinyColor.fromHSV(HSVColor.fromAHSV(
+            (double x) => HSVColor.fromAHSV(
               1.0,
               x,
               1.0,
               1.0,
-            )).color
+            ).toColor(),
           ).toList()
         )
       ),
