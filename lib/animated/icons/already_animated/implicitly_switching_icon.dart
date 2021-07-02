@@ -32,7 +32,7 @@ class ImplicitlySwitchingIcon extends ImplicitlyAnimatedWidget {
 
 class _ImplicitlySwitchingIconState extends AnimatedWidgetBaseState<ImplicitlySwitchingIcon> {
 
-  Tween<double?>? _tween;
+  Tween<double>? _tween;
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
@@ -41,13 +41,13 @@ class _ImplicitlySwitchingIconState extends AnimatedWidgetBaseState<ImplicitlySw
       widget.progress,
       (dynamic value) 
         => Tween<double>(begin: value)
-    ) as Tween<double?>?;
+    ) as Tween<double>?;
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitchingIcon(
-      progress: AlwaysStoppedAnimation<double?>(this._tween!.evaluate(animation)),
+      progress: AlwaysStoppedAnimation<double>(this._tween!.evaluate(animation)),
       firstIcon: widget.firstIcon,
       secondIcon: widget.secondIcon,
       color: widget.color,

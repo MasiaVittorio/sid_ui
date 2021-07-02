@@ -13,13 +13,13 @@ class AnimatedDouble extends ImplicitlyAnimatedWidget {
   );
 
   final double value;
-  final Widget Function(BuildContext, double?) builder;
+  final Widget Function(BuildContext, double) builder;
   @override
   _DivisionAnimateState createState() => _DivisionAnimateState();
 }
 
 class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedDouble> {
-  Tween<double?>? _double;
+  Tween<double>? _double;
 
   @override 
   void forEachTween(TweenVisitor<dynamic> visitor) {
@@ -28,7 +28,7 @@ class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedDouble> {
       widget.value,
       (dynamic value) 
         => Tween<double>(begin: value)
-    ) as Tween<double?>?;
+    )  as Tween<double>;
   }
 
   @override
