@@ -147,7 +147,6 @@ class RadioNavBar<T> extends StatelessWidget {
                 duration: duration,
                 selected: value == this.selectedValue,
                 onTap: () => this.onSelect(value),
-                animatedIcon: !shifting,
                 height: this.tileSize,
               ),
               Expanded(child: InkResponse(
@@ -174,7 +173,6 @@ class _Tile extends StatelessWidget {
   final RadioNavBarItem item;
   final bool selected;
   final VoidCallback onTap;
-  final bool animatedIcon;
   final double height;
   final Duration duration;
   final Color accentTextColor;
@@ -184,7 +182,6 @@ class _Tile extends StatelessWidget {
     required this.duration,
     required this.selected,
     required this.onTap,
-    required this.animatedIcon,
     required this.height,
     required this.accentTextColor,
   });
@@ -214,12 +211,11 @@ class _Tile extends StatelessWidget {
               ignorePointer: true,
               child: _Icon(item,
                 duration: duration,
-                animated: animatedIcon,
                 selected: selected,
                 height: height,
-                accentTextColor: accentTextColor,
+                accentColor: accentTextColor,
               ),
-            ),
+            ),/// TODO: something breaks when altering the accent on stage, seems to be here but idk wtf
             _Label(item,
               duration: duration,
               selected: selected,
@@ -239,38 +235,58 @@ class _Tile extends StatelessWidget {
 class _Icon extends StatelessWidget {
   final RadioNavBarItem item;
   final bool selected;
-  final bool animated;
   final double height;
   final Duration duration;
-  final Color accentTextColor;
+  final Color accentColor;
   _Icon(this.item, {
-    required this.accentTextColor,
+    required this.accentColor,
     required this.selected,
-    required this.animated,
     required this.height,
     required this.duration,
   });
 
+  static const double _defaultIconSize = 24;
+
   @override
   Widget build(BuildContext context) {
-    if(animated && item.unselectedIcon != null){
+    final double size = item.iconSize 
+    ?? IconTheme.of(context).size
+    ?? _defaultIconSize;
+
+    if(item.unselectedIcon != null){
       return Container(
         height: height,
         width: height,
+        alignment: Alignment.center,
         child: Stack(
           fit: StackFit.expand,
+          clipBehavior: Clip.hardEdge,
           alignment: Alignment.center,
           children: <Widget>[
-            AnimatedOpacity(
-              duration: duration,
-              opacity: !selected ? 1.0 : 0.0,
-              child: Icon(item.unselectedIcon, size: item.iconSize),
-            ),
-            AnimatedOpacity(
-              duration: duration,
-              opacity: selected ? 1.0 : 0.0,
-              child: Icon(item.icon, color: accentTextColor, size: item.iconSize),
-            ),
+            Positioned.fill(child: Center(child: SizedBox(
+              height: size,
+              width: size,
+              child: IgnorePointer(
+                ignoring: selected,
+                child: AnimatedOpacity(
+                  duration: duration,
+                  opacity: !selected ? 1.0 : 0.0,
+                  child: Icon(item.unselectedIcon!, size: size),
+                ),
+              ),
+            ))),
+            Positioned.fill(child: Center(child: SizedBox(
+              height: size,
+              width: size,
+              child: IgnorePointer(
+                ignoring: !selected,
+                child: AnimatedOpacity(
+                  duration: duration,
+                  opacity: selected ? 1.0 : 0.0,
+                  child: Icon(item.icon, color: accentColor, size: size),
+                ),
+              ),
+            ))),
           ],
         ),
       );
@@ -278,10 +294,11 @@ class _Icon extends StatelessWidget {
       return Container(
         height: height,
         width: height,
+        alignment: Alignment.center,
         child: Icon(
           selected ? item.icon : (item.unselectedIcon ?? item.icon),
-          color: selected ? accentTextColor : null,
-          size: item.iconSize,
+          color: selected ? accentColor : null,
+          size: size,
         ),
       );
     }
