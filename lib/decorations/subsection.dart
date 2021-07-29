@@ -11,6 +11,7 @@ class SubSection extends StatelessWidget {
   final BorderRadius borderRadius;
   final bool color;
   final Color? overrideColor;
+  final DecorationImage? image;
 
   const SubSection.withoutMargin(this.children, {
     this.crossAxisAlignment = CrossAxisAlignment.start, 
@@ -21,6 +22,7 @@ class SubSection extends StatelessWidget {
     this.borderRadius = borderRadiusDefault,
     this.color = true,
     this.overrideColor,
+    this.image,
   }): margin = EdgeInsets.zero;
 
   const SubSection(this.children, {
@@ -33,6 +35,7 @@ class SubSection extends StatelessWidget {
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,
     this.overrideColor,
+    this.image,
   });
 
   const SubSection.stretch(this.children, {
@@ -44,6 +47,7 @@ class SubSection extends StatelessWidget {
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.mainAxisSize = MainAxisSize.min,
     this.overrideColor,
+    this.image,
   }): crossAxisAlignment = CrossAxisAlignment.stretch;
 
   static Color getColor(ThemeData theme) => theme.scaffoldBackgroundColor.withOpacity(0.7);
@@ -60,6 +64,7 @@ class SubSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: overrideColor ?? (color ? background : null),
         borderRadius: borderRadius,
+        image: image,
       ),
       child: Material(
         type: MaterialType.transparency,
