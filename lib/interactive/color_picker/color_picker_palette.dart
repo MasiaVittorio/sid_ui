@@ -115,8 +115,13 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
       ),
     );
     
+    final _theme = Theme.of(context);
     final Widget _column = Theme(
-      data: Theme.of(context).copyWith(accentColor: Colors.white),
+      data: _theme.copyWith(
+        colorScheme: _theme.colorScheme.copyWith(
+          secondary: Colors.white,
+        ),
+      ),
       child: LayoutBuilder(builder: (_, constraints){
         return ConstrainedBox(
           constraints: constraints,
@@ -203,7 +208,7 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
                   color: text,
                 ),
               ),
-              // TODO: nonsense, la prima volta che viene trovato il closest qua va non mostra il selezionato
+              // TODO: nonsense, la prima volta che viene trovato il closest qua non mostra il selezionato
               Icon(Icons.check, color: check ? text : Colors.transparent),
             ],
           ),

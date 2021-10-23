@@ -142,7 +142,7 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
       themeData.canvasColor, // this widget is intended to be put over a material background
     );
     final Color accentColor = Color.alphaBlend(
-      widget.accentColor ?? themeData.accentColor.withOpacity(disabled ? 0.17 : 0.2), 
+      widget.accentColor ?? themeData.colorScheme.secondary.withOpacity(disabled ? 0.17 : 0.2), 
       background,
     );
     final Color onBackgroundColor = themeData.colorScheme.onSurface.withOpacity(

@@ -37,7 +37,7 @@ class _VisualSlider extends StatelessWidget {
         height: height,
         width: width,
         decoration: BoxDecoration(
-          color: theme.accentColor.withOpacity(0.2),
+          color: theme.colorScheme.secondary.withOpacity(0.2),
           borderRadius: BorderRadius.circular(_RadioSliderState._radius),
         ),
       );

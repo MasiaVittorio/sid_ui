@@ -206,7 +206,7 @@ class _Tile extends StatelessWidget {
               toAnimate: false,
               shape: BadgeShape.circle,
               // alignment: Alignment.topRight,
-              badgeColor: Theme.of(context).accentColor,
+              badgeColor: Theme.of(context).colorScheme.secondary,
               position: BadgePosition.topEnd(top: 8, end: 8),
               ignorePointer: true,
               child: _Icon(item,
@@ -215,7 +215,8 @@ class _Tile extends StatelessWidget {
                 height: height,
                 accentColor: accentTextColor,
               ),
-            ),/// TODO: something breaks when altering the accent on stage, seems to be here but idk wtf
+            ),/// TODO: something breaks when altering the accent 
+              /// on stage, seems to be here but idk wtf
             _Label(item,
               duration: duration,
               selected: selected,

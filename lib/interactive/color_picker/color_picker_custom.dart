@@ -145,9 +145,11 @@ class _CustomColorPickerState extends State<CustomColorPicker> with TickerProvid
 
   Widget _scrollableDisplayer(BoxConstraints constraints, bool big, ThemeData themeOfContext) => Theme(
     data: themeOfContext.copyWith(
-      accentColor: this._color == Colors.white 
-        ? Colors.black
-        : Colors.white
+      colorScheme: themeOfContext.colorScheme.copyWith(
+        secondary: this._color == Colors.white 
+          ? Colors.black
+          : Colors.white,
+      ),
     ),
     child: SingleChildScrollView(
       physics: SidereusScrollPhysics(
