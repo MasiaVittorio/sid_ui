@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sid_ui/interactive/advanced_slider/advanced_slider.dart';
 import 'package:sid_ui/interactive/advanced_slider/vertical_slider.dart';

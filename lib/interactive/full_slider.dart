@@ -14,9 +14,9 @@ class FullSlider extends StatefulWidget {
 
   final double? defaultValue; //if not null, a reset button will be displayed
   final double value;
-  final ValueChanged<double?>? onChanged;
+  final ValueChanged<double>? onChanged;
   // final ValueChanged<double> onChangeStart;
-  final ValueChanged<double?>? onChangeEnd;
+  final ValueChanged<double>? onChangeEnd;
 
   final double min;
   final double max;
@@ -279,8 +279,8 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
             duration: const Duration(milliseconds: 250), 
             curve: Curves.ease,
           ).then((_){
-            widget.onChanged?.call(widget.defaultValue);
-            widget.onChangeEnd?.call(widget.defaultValue);
+            widget.onChanged?.call(widget.defaultValue!);
+            widget.onChangeEnd?.call(widget.defaultValue!);
           });
         },
       ),

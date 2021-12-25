@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:sid_ui/animated/splashing_colored_background.dart';
 import 'package:sid_ui/decorations/up_shadower.dart';
 

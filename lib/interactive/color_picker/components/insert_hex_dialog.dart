@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:sid_ui/dialogs/insert_dialog.dart';
 
 class InsertHexDialog extends StatelessWidget {

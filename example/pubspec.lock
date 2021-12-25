@@ -112,9 +112,11 @@ packages:
   sid_utils:
     dependency: transitive
     description:
-      path: "../../sid_utils"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: f13cbfec39319c0f48cbe49ef0be325f8c912475
+      url: "https://github.com/MasiaVittorio/sid_utils.git"
+    source: git
     version: "0.0.1"
   sky_engine:
     dependency: transitive
