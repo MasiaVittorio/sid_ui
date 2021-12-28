@@ -12,7 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   sid_utils: 
-    git: https://github.com/MasiaVittorio/sid_utils.git
+    path: ../sid_utils
+    # git: https://github.com/MasiaVittorio/sid_utils.git
   flutter_vector_icons: ^1.0.0
   badges: ^2.0.1
 

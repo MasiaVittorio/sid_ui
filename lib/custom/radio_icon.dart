@@ -30,11 +30,11 @@ class RadioIcon extends ImplicitlyAnimatedWidget {
 }
 
 class _RadioIconState extends AnimatedWidgetBaseState<RadioIcon> {
-  Tween<double?>? _count;
+  Tween<double>? _count;
   
   @override  
   Widget build(BuildContext context) {
-    double ev = _count!.evaluate(animation)!;
+    double ev = _count!.evaluate(animation);
     return IconTheme.merge(
       data: IconThemeData(opacity: 1.0),
       child: Padding(
@@ -73,7 +73,7 @@ class _RadioIconState extends AnimatedWidgetBaseState<RadioIcon> {
       _count, 
       widget.value ? 1.0 : 0.0, 
       (value) => Tween<double>(begin: value)
-    ) as Tween<double?>?;
+    ) as Tween<double>;
   }
 }
 

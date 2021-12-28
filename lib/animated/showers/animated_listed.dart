@@ -25,7 +25,7 @@ class AnimatedListed extends ImplicitlyAnimatedWidget {
 }
 
 class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedListed> {
-  Tween<double?>? _tween;
+  Tween<double>? _tween;
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
@@ -34,13 +34,13 @@ class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedListed> {
       widget.listed ? 1.0 : 0.0,
       (dynamic value) 
         => Tween<double>(begin: value)
-    ) as Tween<double?>?;
+    ) as Tween<double>;
   }
 
   @override
   Widget build(BuildContext context) {
     final double overlap = widget.overlapSizeAndOpacity.clamp(0.0, 1.0);
-    final double val = _tween!.evaluate(animation)!;
+    final double val = _tween!.evaluate(animation);
 
     final double maxSizeVal = 1/2 + overlap/2;
 

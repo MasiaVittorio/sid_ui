@@ -21,7 +21,7 @@ class AnimatedScale extends ImplicitlyAnimatedWidget {
 }
 
 class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedScale> {
-  Tween<double?>? _scale;
+  Tween<double>? _scale;
 
   @override 
   void forEachTween(TweenVisitor<dynamic> visitor) {
@@ -30,12 +30,12 @@ class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedScale> {
       widget.scale,
       (dynamic value) 
         => Tween<double>(begin: value)
-    ) as Tween<double?>?;
+    ) as Tween<double>;
   }
 
   @override
   Widget build(BuildContext context) {
-    final val = _scale!.evaluate(animation)!;
+    final val = _scale!.evaluate(animation);
     final result = Transform.scale(
       child: widget.child,
       scale: val,

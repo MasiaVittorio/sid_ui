@@ -25,7 +25,7 @@ class ImplicitlyAnimatedIcon extends ImplicitlyAnimatedWidget {
 
 class _ImplicitlyAnimatedIconState extends AnimatedWidgetBaseState<ImplicitlyAnimatedIcon> {
 
-  Tween<double?>? _tween;
+  Tween<double>? _tween;
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
@@ -34,13 +34,13 @@ class _ImplicitlyAnimatedIconState extends AnimatedWidgetBaseState<ImplicitlyAni
       widget.progress,
       (dynamic value) 
         => Tween<double>(begin: value)
-    ) as Tween<double?>?;
+    ) as Tween<double>;
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedIcon(
-      progress: AlwaysStoppedAnimation<double?>(this._tween!.evaluate(animation)) as Animation<double>,
+      progress: AlwaysStoppedAnimation<double>(this._tween!.evaluate(animation)),
       icon: widget.icon,
       color: widget.color,
       size: widget.size,

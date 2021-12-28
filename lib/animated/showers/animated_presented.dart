@@ -35,7 +35,7 @@ class AnimatedPresented extends ImplicitlyAnimatedWidget {
 }
 
 class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedPresented> {
-  Tween<double?>? _presented;
+  Tween<double>? _presented;
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
@@ -44,7 +44,7 @@ class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedPresented> {
       widget.presented ? 1.0 : 0.0,
       (dynamic value) 
         => Tween<double>(begin: value)
-    ) as Tween<double?>?;
+    ) as Tween<double>;
   }
 
   @override
