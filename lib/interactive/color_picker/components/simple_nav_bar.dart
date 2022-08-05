@@ -144,6 +144,7 @@ class _SimpleTile extends StatelessWidget {
     {
       this.onTap,
       this.selected = false,
+      // ignore: unused_element
       this.indexLabel,
       this.titleStyle,
       required this.duration,
