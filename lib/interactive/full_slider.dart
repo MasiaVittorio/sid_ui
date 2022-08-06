@@ -35,6 +35,9 @@ class FullSlider extends StatefulWidget {
 
   final bool enabled;
 
+  final double mainAxisMargin;
+  final double crossAxisMargin;
+
   const FullSlider({
     required this.value,
     this.onChangeEnd,
@@ -60,6 +63,9 @@ class FullSlider extends StatefulWidget {
     this.crossAxisSize = 56.0,
     this.scrollDirection = Axis.horizontal,
     this.radius = 8.0,
+
+    this.mainAxisMargin = 16,
+    this.crossAxisMargin = 8,
   }): assert(max > min);
 
   @override
@@ -107,13 +113,14 @@ class _FullSliderState extends State<FullSlider> with SingleTickerProviderStateM
 
   double animationToWidget(double animationValue) => animationValue.mapToRange(widget.min, widget.max);
 
-  static const double _marginMain = 16.0;
-  static const double _marginCross = 8.0; 
   EdgeInsets get margin => EdgeInsets.symmetric(
-    horizontal: horizontal ? _marginMain : _marginCross, 
-    vertical: vertical ? _marginMain : _marginCross, 
+    horizontal: horizontal ? widget.mainAxisMargin : widget.crossAxisMargin, 
+    vertical: vertical ? widget.mainAxisMargin : widget.crossAxisMargin, 
   );
-  static const Widget _separator = SizedBox(width: _marginMain, height: _marginMain,);
+  Widget get _separator => SizedBox(
+    width: widget.mainAxisMargin, 
+    height: widget.mainAxisMargin,
+  );
 
   bool get horizontal => widget.scrollDirection == Axis.horizontal;
   bool get vertical => widget.scrollDirection == Axis.vertical;
