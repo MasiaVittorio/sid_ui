@@ -8,21 +8,20 @@ class RadioPageTransition<A> extends StatelessWidget {
     required this.previous,
     required this.children,
     required this.orderedPages,
-    this.canvasBackground = false,
+    this.backgroundColor,
     this.offset = 100,
   }) : assert(offset > 0);
   final A page;
   final A previous;
   final List<A> orderedPages;
   final Map<A,Widget> children;
-  final bool canvasBackground;
+  final Color? backgroundColor;
   final double offset;
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
     return Material(
-      color: canvasBackground ? theme.canvasColor : theme.scaffoldBackgroundColor,
+      color: backgroundColor,
       child: Stack(fit: StackFit.expand, children: <Widget>[
         for(final entry in children.entries)
           AnimatedPresented(
