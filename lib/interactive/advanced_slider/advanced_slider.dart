@@ -71,7 +71,7 @@ class AdvancedSlider extends StatelessWidget {
                   ? this.nameStyle!.copyWith(color: this.nameStyle!.color!.withOpacity(0.5))
                   : TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).textTheme.bodyText2?.color?.withOpacity(0.5)  
+                    color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5)  
                   ),
             ),
           ),

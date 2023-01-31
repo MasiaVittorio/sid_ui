@@ -66,10 +66,10 @@ class _ButtonWithIcon extends StatelessWidget {
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(left: 4.0),
             child: DefaultTextStyle.merge(
-              style: theme.textTheme.button?.copyWith(
+              style: theme.textTheme.labelLarge?.copyWith(
                 color: this.selectedColor 
                   ?? radioTheme?.selectedColor
-                    ?? theme.textTheme.bodyText2?.color,
+                    ?? theme.textTheme.bodyMedium?.color,
               ),
               child: item.title
             ),

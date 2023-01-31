@@ -42,7 +42,7 @@ class _ButtonWithoutIcon extends StatelessWidget {
               style: TextStyle(
                 color: this.selectedColor 
                   ?? radioTheme?.selectedColor
-                    ?? theme.textTheme.bodyText2?.color,
+                    ?? theme.textTheme.bodyMedium?.color,
               ),
               child: item.title
             )

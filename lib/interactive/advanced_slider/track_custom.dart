@@ -42,13 +42,14 @@ class ShadeRectangularSliderTrackShape extends SliderTrackShape {
   void paint(
     PaintingContext context,
     Offset offset, {
-    RenderBox? parentBox,
+    required RenderBox parentBox,
     required SliderThemeData sliderTheme,
-    Animation<double>? enableAnimation,
-    TextDirection? textDirection,
-    Offset? thumbCenter,
-    bool? isDiscrete,
+    required Animation<double> enableAnimation,
+    required Offset thumbCenter,
+    Offset? secondaryOffset,
     bool? isEnabled,
+    bool? isDiscrete,
+    required TextDirection textDirection,
   }) {
     // If the slider track height is 0, then it makes no difference whether the
     // track is painted or not, therefore the painting can be a no-op.
@@ -60,7 +61,7 @@ class ShadeRectangularSliderTrackShape extends SliderTrackShape {
     // but reversed for right to left text.
     final ColorTween activeTrackColorTween = ColorTween(begin: sliderTheme.disabledActiveTrackColor , end: sliderTheme.activeTrackColor);
     final ColorTween inactiveTrackColorTween = ColorTween(begin: sliderTheme.disabledInactiveTrackColor , end: sliderTheme.inactiveTrackColor);
-    final Paint activePaint = Paint()..color = activeTrackColorTween.evaluate(enableAnimation!)!;
+    final Paint activePaint = Paint()..color = activeTrackColorTween.evaluate(enableAnimation)!;
     final Paint inactivePaint = Paint()..color = inactiveTrackColorTween.evaluate(enableAnimation)!;
     late Paint leftTrackPaint;
     late Paint rightTrackPaint;
@@ -92,7 +93,7 @@ class ShadeRectangularSliderTrackShape extends SliderTrackShape {
     }
 
     final Rect trackRect = getPreferredRect(
-        parentBox: parentBox!,
+        parentBox: parentBox,
         offset: offset,
         sliderTheme: sliderTheme,
         isEnabled: isEnabled,
@@ -100,7 +101,7 @@ class ShadeRectangularSliderTrackShape extends SliderTrackShape {
     );
 
     if(this.gradient == null){
-      final Rect leftTrackSegment = Rect.fromLTRB(trackRect.left, trackRect.top, thumbCenter!.dx - horizontalAdjustment, trackRect.bottom);
+      final Rect leftTrackSegment = Rect.fromLTRB(trackRect.left, trackRect.top, thumbCenter.dx - horizontalAdjustment, trackRect.bottom);
       context.canvas.drawRect(leftTrackSegment, leftTrackPaint);
       final Rect rightTrackSegment = Rect.fromLTRB(thumbCenter.dx + horizontalAdjustment, trackRect.top, trackRect.right, trackRect.bottom);
       context.canvas.drawRect(rightTrackSegment, rightTrackPaint);

@@ -32,7 +32,7 @@
 //   Widget build(BuildContext context) {
 //     final themeData = Theme.of(context);
 
-//     TextStyle defaultStyle = themeData.textTheme.bodyText2;
+//     TextStyle defaultStyle = themeData.textTheme.bodyMedium;
 //     TextStyle selectedStyle = themeData.textTheme.headline5.copyWith(
 //       color: RightContrast(themeData).onCanvas,
 //     );

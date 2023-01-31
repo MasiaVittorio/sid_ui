@@ -1,5 +1,5 @@
 import 'package:badges/badges.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Badge;
 import 'package:sid_ui/animated/showers/animated_listed.dart';
 import 'package:sid_ui/animated/splashing_colored_background.dart';
 import 'models.dart';

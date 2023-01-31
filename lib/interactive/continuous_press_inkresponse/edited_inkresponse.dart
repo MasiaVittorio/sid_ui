@@ -670,7 +670,7 @@ class _InkResponseState extends State<_InkResponseStateWidgetWithLongPressUp>
       if (highlight == null) {
         final RenderBox referenceBox = context.findRenderObject()! as RenderBox;
         _highlights[type] = InkHighlight(
-          controller: Material.of(context)!,
+          controller: Material.of(context),
           referenceBox: referenceBox,
           color: getHighlightColorForType(type),
           shape: widget.highlightShape,
@@ -706,7 +706,7 @@ class _InkResponseState extends State<_InkResponseStateWidgetWithLongPressUp>
   }
 
   InteractiveInkFeature _createInkFeature(Offset globalPosition) {
-    final MaterialInkController inkController = Material.of(context)!;
+    final MaterialInkController inkController = Material.of(context);
     final RenderBox referenceBox = context.findRenderObject()! as RenderBox;
     final Offset position = referenceBox.globalToLocal(globalPosition);
     const Set<MaterialState> pressed = <MaterialState>{MaterialState.pressed};

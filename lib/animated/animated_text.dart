@@ -14,7 +14,7 @@ class AnimatedText extends StatefulWidget {
     this.duration = const Duration(milliseconds: 200),
     this.style,
     this.textAlign,
-    this.curve: Curves.easeIn,
+    this.curve = Curves.easeIn,
     this.maxLines,
     this.overflow,
     Key? key,
@@ -128,16 +128,13 @@ class AnimatedTextState extends State<AnimatedText> with TickerProviderStateMixi
 
   late AnimationController _controller;
   late Animation<int> _stepIndex;
-  // String _current;
   List<String> _steps = <String>[];
 
   String get currentText => _steps[_stepIndex.value];
 
   @override
   void initState() {
-    // _current = widget.text;
     _steps = <String>[
-      // _current
       widget.text,
     ];
 
@@ -170,12 +167,15 @@ class AnimatedTextState extends State<AnimatedText> with TickerProviderStateMixi
   void didUpdateWidget(AnimatedText oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.text != widget.text){
-    // if (_current != widget.text){
       _steps = AnimatedText.stringInterpolatedSteps(currentText, widget.text);
+      if(_steps.length == 3){
+        _steps = [
+          _steps[2],
+          _steps[2],
+        ];
+      }
 
       _controller.reset();
-
-      // _current = widget.text;
 
       _initStep();
 

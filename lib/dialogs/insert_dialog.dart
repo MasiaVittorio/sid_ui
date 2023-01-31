@@ -93,7 +93,7 @@ class _InsertDialogState extends State<InsertDialog> {
     String _errorString = this.widget.checker(this._controller!.text);
     bool _error = _errorString != '';
 
-    final Color? themeTextColor = Theme.of(context).textTheme.bodyText2?.color;
+    final Color? themeTextColor = Theme.of(context).textTheme.bodyMedium?.color;
 
     final Widget _expanded = TextField(
       keyboardType: widget.inputType,
@@ -102,7 +102,7 @@ class _InsertDialogState extends State<InsertDialog> {
       maxLength: this.widget.maxLenght,
       controller: this._controller,
       textCapitalization: TextCapitalization.characters,
-      style: Theme.of(context).textTheme.bodyText2?.copyWith(
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
         fontSize: 18.0,
         fontWeight: _error ? null : FontWeight.w600,
       ),

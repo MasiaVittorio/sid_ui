@@ -98,7 +98,7 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
           }),
           isScrollable: true,
           dragStartBehavior: DragStartBehavior.down,
-          indicatorColor: Theme.of(context).textTheme.bodyText2?.color,
+          indicatorColor: Theme.of(context).textTheme.bodyMedium?.color,
           indicatorWeight: 3.0,
           tabs: List.generate(this._tabs.length, (int i){
             return Tab(
@@ -108,9 +108,9 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
           }),
           controller: this._tabController,
           unselectedLabelStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
-          labelColor: Theme.of(context).textTheme.bodyText2?.color,
+          labelColor: Theme.of(context).textTheme.bodyMedium?.color,
           labelStyle: TextStyle(fontWeight: FontWeight.w700),
-          unselectedLabelColor: Theme.of(context).textTheme.bodyText2?.color?.withOpacity(0.5),
+          unselectedLabelColor: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
         ),
       ),
     );
