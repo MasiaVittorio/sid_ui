@@ -148,7 +148,7 @@ class _PaletteColorPickerState extends State<PaletteColorPicker> with TickerProv
                         ),
                     ].part(2))
                       Row(children: [
-                        for(final child in couple!) Expanded(child: child),
+                        for(final child in couple) Expanded(child: child),
                       ],),
                   ],
                 ),

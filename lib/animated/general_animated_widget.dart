@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 
-
 class AnimatedDouble extends ImplicitlyAnimatedWidget {
   AnimatedDouble({
     required this.value,
     required this.builder,
-    Curve? curve,
-    required Duration duration,
-  }): super(
-    curve: curve ?? Curves.linear, 
-    duration: duration,
-  );
+    super.curve = Curves.ease,
+    super.duration = const Duration(milliseconds: 250),
+    this.animate = true, 
+  });
 
   final double value;
-  final Widget Function(BuildContext, double) builder;
+  final bool animate;
+  final Widget Function(BuildContext context, double) builder;
   @override
   _DivisionAnimateState createState() => _DivisionAnimateState();
 }
@@ -21,14 +19,13 @@ class AnimatedDouble extends ImplicitlyAnimatedWidget {
 class _DivisionAnimateState extends AnimatedWidgetBaseState<AnimatedDouble> {
   Tween<double>? _double;
 
-  @override 
+  @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
     _double = visitor(
-      _double, 
+      _double,
       widget.value,
-      (dynamic value) 
-        => Tween<double>(begin: value)
-    )  as Tween<double>;
+      (dynamic value) => Tween<double>(begin: widget.animate ? widget.value : value),
+    ) as Tween<double>;
   }
 
   @override
